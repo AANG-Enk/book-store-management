@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Book extends Model
@@ -50,5 +51,10 @@ class Book extends Model
     public function getFormattedPriceAttribute(): string
     {
         return 'Rp ' . number_format((float) $this->price, 0, ',', '.');
+    }
+
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(CartItem::class);
     }
 }

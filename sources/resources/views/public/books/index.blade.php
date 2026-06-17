@@ -165,9 +165,34 @@
                                                     </div>
                                                 @endif
 
-                                                <a href="{{ route('books.show', $book) }}" class="btn btn-outline-primary btn-sm w-100">
+                                                <div class="d-grid gap-2">
+                                                <a href="{{ route('books.show', $book) }}" class="btn btn-outline-primary btn-sm">
                                                     Lihat Detail
                                                 </a>
+
+                                                @auth
+                                                    @if (auth()->user()->isCustomer())
+                                                        @if ($book->stock > 0)
+                                                            <form method="POST" action="{{ route('customer.cart.store', $book) }}">
+                                                                @csrf
+
+                                                                <button type="submit" class="btn btn-primary btn-sm w-100">
+                                                                    <i class="bi bi-cart-plus me-1"></i>
+                                                                    Keranjang
+                                                                </button>
+                                                            </form>
+                                                        @else
+                                                            <button type="button" class="btn btn-secondary btn-sm w-100" disabled>
+                                                                Stok Habis
+                                                            </button>
+                                                        @endif
+                                                    @endif
+                                                @else
+                                                    <a href="{{ route('login') }}" class="btn btn-primary btn-sm">
+                                                        Login untuk Beli
+                                                    </a>
+                                                @endauth
+                                            </div>
                                             </div>
                                         </div>
                                     </div>

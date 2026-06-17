@@ -184,3 +184,7 @@ a {
         height: 420px;
     }
 }
+
+.cart-summary-card {
+    top: 92px;
+}

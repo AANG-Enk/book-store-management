@@ -34,8 +34,8 @@
                     <p class="text-secondary">
                         Simpan buku sebelum melakukan checkout.
                     </p>
-                    <a href="#" class="btn btn-primary btn-sm disabled">
-                        Segera Dibuat
+                    <a href="{{ route('customer.cart.index') }}" class="btn btn-primary btn-sm">
+                        Lihat Keranjang
                     </a>
                 </div>
             </div>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BookController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
+use App\Http\Controllers\Customer\CartController;
 
 use App\Http\Controllers\Public\BookCatalogController;
 
@@ -40,6 +41,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('customer')
         ->group(function () {
             Route::get('/dashboard', [CustomerDashboardController::class, 'index'])->name('dashboard');
+
+            Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+            Route::post('/cart/{book:slug}', [CartController::class, 'store'])->name('cart.store');
+            Route::patch('/cart/items/{cartItem}', [CartController::class, 'update'])->name('cart.update');
+            Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy'])->name('cart.destroy');
+            Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
         });
 });
 

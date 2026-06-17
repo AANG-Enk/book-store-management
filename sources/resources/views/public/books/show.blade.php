@@ -83,10 +83,31 @@
                     <div class="mt-4 d-flex flex-wrap gap-2">
                         @auth
                             @if (auth()->user()->isCustomer())
-                                <a href="#" class="btn btn-primary disabled">
-                                    <i class="bi bi-cart-plus me-1"></i>
-                                    Tambah ke Keranjang
-                                </a>
+                                @if ($book->stock > 0)
+                                    <form method="POST" action="{{ route('customer.cart.store', $book) }}" class="d-flex gap-2 align-items-center">
+                                        @csrf
+
+                                        <input
+                                            type="number"
+                                            name="quantity"
+                                            value="1"
+                                            min="1"
+                                            max="{{ $book->stock }}"
+                                            class="form-control"
+                                            style="width: 90px;"
+                                            aria-label="Jumlah buku"
+                                        >
+
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-cart-plus me-1"></i>
+                                            Tambah ke Keranjang
+                                        </button>
+                                    </form>
+                                @else
+                                    <button type="button" class="btn btn-secondary" disabled>
+                                        Stok Habis
+                                    </button>
+                                @endif
                             @else
                                 <a href="{{ route('admin.books.edit', $book) }}" class="btn btn-primary">
                                     <i class="bi bi-pencil me-1"></i>

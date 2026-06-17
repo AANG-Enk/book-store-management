@@ -38,7 +38,23 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link disabled" aria-disabled="true">Keranjang</a>
+                    <a
+                        href="{{ route('customer.cart.index') }}"
+                        class="nav-link {{ request()->routeIs('customer.cart.*') ? 'active fw-semibold text-primary' : '' }}"
+                    >
+                        Keranjang
+                        @auth
+                            @if (auth()->user()->isCustomer())
+                                @php
+                                    $cartCount = auth()->user()->cartItems()->sum('quantity');
+                                @endphp
+
+                                @if ($cartCount > 0)
+                                    <span class="badge text-bg-primary ms-1">{{ $cartCount }}</span>
+                                @endif
+                            @endif
+                        @endauth
+                    </a>
                 </li>
 
                 <li class="nav-item">
