@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\CategoryController;
+
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
+
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('admin')
         ->group(function () {
             Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+            Route::resource('categories', CategoryController::class);
         });
 
     Route::prefix('customer')

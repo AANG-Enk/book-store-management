@@ -20,7 +20,10 @@
 
         <div class="small text-white-50 text-uppercase mt-4 mb-2">Master Data</div>
 
-        <a href="#" class="admin-nav-link disabled" aria-disabled="true">
+        <a
+            href="{{ route('admin.categories.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+        >
             <i class="bi bi-tags"></i>
             <span>Kategori Buku</span>
         </a>
