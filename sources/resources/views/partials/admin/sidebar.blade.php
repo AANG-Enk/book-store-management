@@ -36,7 +36,10 @@
             <span>Buku</span>
         </a>
 
-        <a href="#" class="admin-nav-link disabled" aria-disabled="true">
+        <a
+            href="{{ route('admin.suppliers.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.suppliers.*') ? 'active' : '' }}"
+        >
             <i class="bi bi-truck"></i>
             <span>Supplier</span>
         </a>

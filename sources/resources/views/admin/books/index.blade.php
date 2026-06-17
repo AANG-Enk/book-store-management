@@ -33,13 +33,26 @@
                     >
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <label for="category_id" class="form-label">Kategori</label>
                     <select id="category_id" name="category_id" class="form-select">
                         <option value="">Semua Kategori</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->id }}" @selected((string) $categoryId === (string) $category->id)>
                                 {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="supplier_id" class="form-label">Supplier</label>
+                    <select id="supplier_id" name="supplier_id" class="form-select">
+                        <option value="">Semua Supplier</option>
+
+                        @foreach ($suppliers as $supplier)
+                            <option value="{{ $supplier->id }}" @selected((string) $supplierId === (string) $supplier->id)>
+                                {{ $supplier->name }}
                             </option>
                         @endforeach
                     </select>
@@ -54,7 +67,7 @@
                     </select>
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-outline-primary flex-fill">
                             <i class="bi bi-search me-1"></i>
@@ -93,6 +106,7 @@
                                 <th style="width: 70px;">No</th>
                                 <th>Buku</th>
                                 <th>Kategori</th>
+                                <th>Supplier</th>
                                 <th>Harga</th>
                                 <th>Stok</th>
                                 <th>Status</th>
@@ -140,6 +154,11 @@
                                             {{ $book->category?->name ?? '-' }}
                                         </span>
                                     </td>
+                                    <td>
+                                        <span class="small text-secondary">
+                                            {{ $book->supplier?->name ?? '-' }}
+                                        </span>
+                                    </td>
                                     <td>{{ $book->formatted_price }}</td>
                                     <td>
                                         @if ($book->stock <= 0)
@@ -159,6 +178,13 @@
                                     </td>
                                     <td class="text-end">
                                         <div class="d-inline-flex gap-2">
+                                            <a
+                                                href="{{ route('admin.books.stock.edit', $book) }}"
+                                                class="btn btn-outline-secondary btn-sm"
+                                            >
+                                                Stok
+                                            </a>
+
                                             <a
                                                 href="{{ route('admin.books.edit', $book) }}"
                                                 class="btn btn-outline-primary btn-sm"

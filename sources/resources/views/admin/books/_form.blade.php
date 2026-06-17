@@ -1,7 +1,7 @@
 @csrf
 
 <div class="row g-3">
-    <div class="col-md-8">
+    <div class="col-md-4">
         <label for="title" class="form-label">Judul Buku</label>
         <input
             id="title"
@@ -40,6 +40,30 @@
         </select>
 
         @error('category_id')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="col-md-4">
+        <label for="supplier_id" class="form-label">Supplier</label>
+        <select
+            id="supplier_id"
+            name="supplier_id"
+            class="form-select @error('supplier_id') is-invalid @enderror"
+        >
+            <option value="">Tanpa supplier</option>
+
+            @foreach ($suppliers as $supplier)
+                <option
+                    value="{{ $supplier->id }}"
+                    @selected((string) old('supplier_id', $book->supplier_id ?? '') === (string) $supplier->id)
+                >
+                    {{ $supplier->name }}
+                </option>
+            @endforeach
+        </select>
+
+        @error('supplier_id')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>

@@ -11,6 +11,7 @@ class Book extends Model
 {
     protected $fillable = [
         'category_id',
+        'supplier_id',
         'title',
         'slug',
         'author',
@@ -61,5 +62,10 @@ class Book extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class);
     }
 }

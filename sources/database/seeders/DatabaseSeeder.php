@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Book;
+use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -66,6 +67,7 @@ class DatabaseSeeder extends Seeder
         $bookSeeds = [
             [
                 'category_slug' => 'novel',
+                'supplier_name' => 'Gramedia Distributor',
                 'title' => 'Laskar Pelangi',
                 'slug' => 'laskar-pelangi',
                 'author' => 'Andrea Hirata',
@@ -79,6 +81,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_slug' => 'pendidikan',
+                'supplier_name' => 'Gramedia Distributor',
                 'title' => 'Dasar-Dasar Pemrograman Web',
                 'slug' => 'dasar-dasar-pemrograman-web',
                 'author' => 'Tim BookStore',
@@ -92,6 +95,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_slug' => 'bisnis',
+                'supplier_name' => 'Gramedia Distributor',
                 'title' => 'Manajemen Bisnis untuk Pemula',
                 'slug' => 'manajemen-bisnis-untuk-pemula',
                 'author' => 'Raka Pratama',
@@ -105,6 +109,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'category_slug' => 'komik',
+                'supplier_name' => 'Gramedia Distributor',
                 'title' => 'Petualangan Si Kancil',
                 'slug' => 'petualangan-si-kancil',
                 'author' => 'Budi Santoso',
@@ -127,13 +132,48 @@ class DatabaseSeeder extends Seeder
                 continue;
             }
 
-            unset($bookSeed['category_slug']);
+            $supplier = null;
+
+            if (! empty($bookSeed['supplier_name'])) {
+                $supplier = Supplier::query()
+                    ->where('name', $bookSeed['supplier_name'])
+                    ->first();
+            }
+
+            unset($bookSeed['category_slug'], $bookSeed['supplier_name']);
 
             Book::query()->firstOrCreate(
                 ['slug' => $bookSeed['slug']],
                 array_merge($bookSeed, [
                     'category_id' => $category->id,
+                    'supplier_id' => $supplier?->id,
                 ])
+            );
+        }
+
+        $suppliers = [
+            [
+                'name' => 'Gramedia Distributor',
+                'phone' => '0215551001',
+                'email' => 'supplier@gramedia.test',
+                'address' => 'Jl. Buku Nasional No. 1, Jakarta',
+                'notes' => 'Supplier utama untuk buku populer dan pendidikan.',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Nusantara Book Supply',
+                'phone' => '0225552002',
+                'email' => 'sales@nusantarabook.test',
+                'address' => 'Jl. Merdeka No. 20, Bandung',
+                'notes' => 'Supplier buku lokal dan komik.',
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($suppliers as $supplier) {
+            Supplier::query()->firstOrCreate(
+                ['name' => $supplier['name']],
+                $supplier
             );
         }
     }

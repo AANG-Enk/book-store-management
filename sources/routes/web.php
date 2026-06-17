@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BookController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\BookStockController;
+use App\Http\Controllers\Admin\SupplierController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 use App\Http\Controllers\Customer\CartController;
@@ -48,6 +50,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
             Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
             Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+
+            Route::resource('suppliers', SupplierController::class);
+
+            Route::get('/books/{book}/stock', [BookStockController::class, 'edit'])->name('books.stock.edit');
+            Route::patch('/books/{book}/stock', [BookStockController::class, 'update'])->name('books.stock.update');
         });
 
     Route::prefix('customer')

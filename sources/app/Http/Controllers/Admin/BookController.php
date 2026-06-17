@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Supplier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -18,10 +19,11 @@ class BookController extends Controller
     {
         $search = $request->string('search')->toString();
         $categoryId = $request->string('category_id')->toString();
+        $supplierId = $request->string('supplier_id')->toString();
         $status = $request->string('status')->toString();
 
         $books = Book::query()
-            ->with('category')
+            ->with(['category', 'supplier'])
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($subQuery) use ($search) {
                     $subQuery
@@ -33,6 +35,9 @@ class BookController extends Controller
             })
             ->when($categoryId !== '', function ($query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
+            })
+            ->when($supplierId !== '', function ($query) use ($supplierId) {
+                $query->where('supplier_id', $supplierId);
             })
             ->when($status !== '', function ($query) use ($status) {
                 if ($status === 'active') {
@@ -51,12 +56,18 @@ class BookController extends Controller
             ->orderBy('name')
             ->get();
 
+        $suppliers = Supplier::query()
+            ->orderBy('name')
+            ->get();
+
         return view('admin.books.index', compact(
             'books',
             'categories',
             'search',
             'categoryId',
-            'status'
+            'status',
+            'suppliers',
+            'supplierId'
         ));
     }
 
@@ -67,7 +78,12 @@ class BookController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.books.create', compact('categories'));
+        $suppliers = Supplier::query()
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.books.create', compact('categories','suppliers'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -102,7 +118,13 @@ class BookController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('admin.books.edit', compact('book', 'categories'));
+        $suppliers = Supplier::query()
+            ->where('is_active', true)
+            ->orWhere('id', $book->supplier_id)
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.books.edit', compact('book', 'categories', 'suppliers'));
     }
 
     public function update(Request $request, Book $book): RedirectResponse
@@ -177,6 +199,7 @@ class BookController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'is_active' => ['nullable', 'boolean'],
+            'supplier_id' => ['nullable', 'integer', 'exists:suppliers,id'],
         ]);
     }
 
