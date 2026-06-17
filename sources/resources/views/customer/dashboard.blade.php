@@ -19,8 +19,8 @@
                     <p class="text-secondary">
                         Cari buku berdasarkan kategori dan judul.
                     </p>
-                    <a href="#" class="btn btn-primary btn-sm disabled">
-                        Segera Dibuat
+                    <a href="{{ route('books.index') }}" class="btn btn-primary btn-sm">
+                        Lihat Katalog
                     </a>
                 </div>
             </div>

@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\BookController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 
+use App\Http\Controllers\Public\BookCatalogController;
+
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('public.home');
 })->name('home');
+
+Route::get('/katalog', [BookCatalogController::class, 'index'])->name('books.index');
+Route::get('/katalog/{book:slug}', [BookCatalogController::class, 'show'])->name('books.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardRedirectController::class)->name('dashboard');

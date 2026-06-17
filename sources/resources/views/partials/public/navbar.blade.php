@@ -29,7 +29,10 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" aria-disabled="true">
+                    <a
+                        class="nav-link {{ request()->routeIs('books.*') ? 'active fw-semibold text-primary' : '' }}"
+                        href="{{ route('books.index') }}"
+                    >
                         Katalog
                     </a>
                 </li>

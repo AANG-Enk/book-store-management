@@ -47,7 +47,7 @@
                             <a href="{{ route('register') }}" class="btn btn-primary">
                                 Mulai Belanja
                             </a>
-                            <a href="#" class="btn btn-outline-secondary">
+                            <a href="{{ route('books.index') }}" class="btn btn-outline-secondary">
                                 Lihat Katalog
                             </a>
                         </div>
