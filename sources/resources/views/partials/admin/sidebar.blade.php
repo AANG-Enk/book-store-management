@@ -28,7 +28,10 @@
             <span>Kategori Buku</span>
         </a>
 
-        <a href="#" class="admin-nav-link disabled" aria-disabled="true">
+        <a
+            href="{{ route('admin.books.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.books.*') ? 'active' : '' }}"
+        >
             <i class="bi bi-book"></i>
             <span>Buku</span>
         </a>

@@ -18,7 +18,7 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <p class="text-secondary mb-1">Total Buku</p>
-                            <h2 class="h4 fw-bold mb-0">0</h2>
+                            <h2 class="h4 fw-bold mb-0">{{ $totalBooks }}</h2>
                         </div>
                         <i class="bi bi-book fs-3 text-primary"></i>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <p class="text-secondary mb-1">Total Customer</p>
-                            <h2 class="h4 fw-bold mb-0">0</h2>
+                            <h2 class="h4 fw-bold mb-0">{{ $totalCustomers }}</h2>
                         </div>
                         <i class="bi bi-people fs-3 text-primary"></i>
                     </div>
@@ -45,8 +45,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-secondary mb-1">Total Pesanan</p>
-                            <h2 class="h4 fw-bold mb-0">0</h2>
+                            <p class="text-secondary mb-1">Total Kategori</p>
+                            <h2 class="h4 fw-bold mb-0">{{ $totalCategories }}</h2>
                         </div>
                         <i class="bi bi-bag-check fs-3 text-primary"></i>
                     </div>
@@ -59,8 +59,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-secondary mb-1">Pembayaran Pending</p>
-                            <h2 class="h4 fw-bold mb-0">0</h2>
+                            <p class="text-secondary mb-1">Stok Menipis</p>
+                            <h2 class="h4 fw-bold mb-0">{{ $lowStockBooks }}</h2>
                         </div>
                         <i class="bi bi-credit-card fs-3 text-primary"></i>
                     </div>

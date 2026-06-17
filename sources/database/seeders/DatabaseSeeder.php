@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Book;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -59,6 +60,80 @@ class DatabaseSeeder extends Seeder
             Category::query()->firstOrCreate(
                 ['slug' => $category['slug']],
                 $category
+            );
+        }
+
+        $bookSeeds = [
+            [
+                'category_slug' => 'novel',
+                'title' => 'Laskar Pelangi',
+                'slug' => 'laskar-pelangi',
+                'author' => 'Andrea Hirata',
+                'publisher' => 'Bentang Pustaka',
+                'publication_year' => 2005,
+                'isbn' => '9789793062792',
+                'description' => 'Novel populer Indonesia tentang perjuangan anak-anak Belitung dalam meraih pendidikan.',
+                'stock' => 12,
+                'price' => 85000,
+                'is_active' => true,
+            ],
+            [
+                'category_slug' => 'pendidikan',
+                'title' => 'Dasar-Dasar Pemrograman Web',
+                'slug' => 'dasar-dasar-pemrograman-web',
+                'author' => 'Tim BookStore',
+                'publisher' => 'BookStore Press',
+                'publication_year' => 2024,
+                'isbn' => '9786020000001',
+                'description' => 'Buku pengantar HTML, CSS, JavaScript, dan konsep dasar pengembangan website.',
+                'stock' => 8,
+                'price' => 95000,
+                'is_active' => true,
+            ],
+            [
+                'category_slug' => 'bisnis',
+                'title' => 'Manajemen Bisnis untuk Pemula',
+                'slug' => 'manajemen-bisnis-untuk-pemula',
+                'author' => 'Raka Pratama',
+                'publisher' => 'Nusantara Media',
+                'publication_year' => 2023,
+                'isbn' => '9786020000002',
+                'description' => 'Panduan dasar memahami bisnis, pemasaran, keuangan, dan operasional usaha.',
+                'stock' => 4,
+                'price' => 78000,
+                'is_active' => true,
+            ],
+            [
+                'category_slug' => 'komik',
+                'title' => 'Petualangan Si Kancil',
+                'slug' => 'petualangan-si-kancil',
+                'author' => 'Budi Santoso',
+                'publisher' => 'Ceria Anak',
+                'publication_year' => 2022,
+                'isbn' => '9786020000003',
+                'description' => 'Komik ringan untuk anak-anak dengan cerita edukatif dan ilustrasi menarik.',
+                'stock' => 0,
+                'price' => 45000,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($bookSeeds as $bookSeed) {
+            $category = Category::query()
+                ->where('slug', $bookSeed['category_slug'])
+                ->first();
+
+            if (! $category) {
+                continue;
+            }
+
+            unset($bookSeed['category_slug']);
+
+            Book::query()->firstOrCreate(
+                ['slug' => $bookSeed['slug']],
+                array_merge($bookSeed, [
+                    'category_id' => $category->id,
+                ])
             );
         }
     }

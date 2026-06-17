@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\BookController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 
@@ -26,6 +27,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->group(function () {
             Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
             Route::resource('categories', CategoryController::class);
+            Route::resource('books', BookController::class);
         });
 
     Route::prefix('customer')
