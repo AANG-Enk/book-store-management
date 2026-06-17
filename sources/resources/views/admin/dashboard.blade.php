@@ -70,7 +70,7 @@
     </div>
 
     <div class="row g-4 mb-4">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <h2 class="h5 fw-bold">Manajemen Pesanan</h2>
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
                     <h2 class="h5 fw-bold">Verifikasi Pembayaran</h2>
@@ -97,44 +97,18 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
-            <h2 class="h5 fw-bold mb-3">Tahap Pengembangan</h2>
-
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Modul</th>
-                            <th>Status</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Auth & Role</td>
-                            <td><span class="badge text-bg-success">Selesai</span></td>
-                            <td>Login, register, admin, dan customer sudah aktif.</td>
-                        </tr>
-                        <tr>
-                            <td>Master Kategori</td>
-                            <td><span class="badge text-bg-warning">Berikutnya</span></td>
-                            <td>CRUD kategori buku untuk admin.</td>
-                        </tr>
-                        <tr>
-                            <td>Master Buku</td>
-                            <td><span class="badge text-bg-secondary">Belum</span></td>
-                            <td>Data buku, stok, harga, gambar, dan kategori.</td>
-                        </tr>
-                        <tr>
-                            <td>Transaksi</td>
-                            <td><span class="badge text-bg-secondary">Belum</span></td>
-                            <td>Keranjang, checkout, pembayaran, dan pesanan.</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 fw-bold">Laporan Admin</h2>
+                    <p class="text-secondary">
+                        Lihat laporan penjualan, pembayaran, stok buku, dan customer.
+                    </p>
+                    <a href="{{ route('admin.reports.index') }}" class="btn btn-outline-primary btn-sm">
+                        Buka Laporan
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\BookStockController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\ReportController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 use App\Http\Controllers\Customer\CartController;
@@ -55,6 +56,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::get('/books/{book}/stock', [BookStockController::class, 'edit'])->name('books.stock.edit');
             Route::patch('/books/{book}/stock', [BookStockController::class, 'update'])->name('books.stock.update');
+
+            Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+            Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
+            Route::get('/reports/payments', [ReportController::class, 'payments'])->name('reports.payments');
+            Route::get('/reports/stocks', [ReportController::class, 'stocks'])->name('reports.stocks');
+            Route::get('/reports/customers', [ReportController::class, 'customers'])->name('reports.customers');
         });
 
     Route::prefix('customer')

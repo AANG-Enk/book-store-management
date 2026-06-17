@@ -64,7 +64,10 @@
 
         <div class="small text-white-50 text-uppercase mt-4 mb-2">Laporan</div>
 
-        <a href="#" class="admin-nav-link disabled" aria-disabled="true">
+        <a
+            href="{{ route('admin.reports.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+        >
             <i class="bi bi-file-earmark-bar-graph"></i>
             <span>Laporan</span>
         </a>
