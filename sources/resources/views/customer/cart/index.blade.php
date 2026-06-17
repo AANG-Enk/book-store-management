@@ -186,12 +186,12 @@
                             </span>
                         </div>
 
-                        <a href="#" class="btn btn-primary w-100 disabled">
-                            Checkout Segera Dibuat
+                        <a href="{{ route('customer.checkout.create') }}" class="btn btn-primary w-100">
+                            Checkout
                         </a>
 
                         <div class="small text-secondary mt-3">
-                            Checkout dan pembayaran manual akan dibuat pada tahap berikutnya.
+                            Pastikan jumlah buku sudah sesuai sebelum checkout.
                         </div>
                     </div>
                 </div>

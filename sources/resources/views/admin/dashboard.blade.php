@@ -45,8 +45,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-secondary mb-1">Total Kategori</p>
-                            <h2 class="h4 fw-bold mb-0">{{ $totalCategories }}</h2>
+                            <p class="text-secondary mb-1">Total Pesanan</p>
+                            <h2 class="h4 fw-bold mb-0">{{ $totalOrders }}</h2>
                         </div>
                         <i class="bi bi-bag-check fs-3 text-primary"></i>
                     </div>

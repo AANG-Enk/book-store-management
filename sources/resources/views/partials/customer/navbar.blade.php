@@ -58,7 +58,12 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link disabled" aria-disabled="true">Pesanan</a>
+                    <a
+                        href="{{ route('customer.orders.index') }}"
+                        class="nav-link {{ request()->routeIs('customer.orders.*') ? 'active fw-semibold text-primary' : '' }}"
+                    >
+                        Pesanan
+                    </a>
                 </li>
             </ul>
 

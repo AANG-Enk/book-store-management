@@ -49,8 +49,8 @@
                     <p class="text-secondary">
                         Lihat status pesanan dan pembayaran.
                     </p>
-                    <a href="#" class="btn btn-primary btn-sm disabled">
-                        Segera Dibuat
+                    <a href="{{ route('customer.orders.index') }}" class="btn btn-primary btn-sm">
+                        Lihat Pesanan
                     </a>
                 </div>
             </div>

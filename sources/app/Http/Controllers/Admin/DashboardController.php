@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -15,12 +16,14 @@ class DashboardController extends Controller
         $totalBooks = Book::query()->count();
         $totalCategories = Category::query()->count();
         $totalCustomers = User::query()->where('role', 'customer')->count();
+        $totalOrders = Order::query()->count();
         $lowStockBooks = Book::query()->where('stock', '<=', 5)->count();
 
         return view('admin.dashboard', compact(
             'totalBooks',
             'totalCategories',
             'totalCustomers',
+            'totalOrders',
             'lowStockBooks'
         ));
     }
