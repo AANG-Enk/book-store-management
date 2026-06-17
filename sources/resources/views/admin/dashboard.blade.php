@@ -59,8 +59,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-secondary mb-1">Stok Menipis</p>
-                            <h2 class="h4 fw-bold mb-0">{{ $lowStockBooks }}</h2>
+                            <p class="text-secondary mb-1">Pembayaran Pending</p>
+                            <h2 class="h4 fw-bold mb-0">{{ $pendingPayments }}</h2>
                         </div>
                         <i class="bi bi-credit-card fs-3 text-primary"></i>
                     </div>

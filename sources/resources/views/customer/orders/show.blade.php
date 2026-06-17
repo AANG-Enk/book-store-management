@@ -111,12 +111,57 @@
                 </div>
             </div>
 
-            <div class="alert alert-info">
-                <div class="fw-semibold mb-1">Pembayaran Manual</div>
-                <div class="small">
-                    Modul upload bukti pembayaran dan verifikasi admin akan dibuat pada tahap berikutnya.
+            @if ($order->payment)
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold mb-3">Pembayaran</h2>
+
+                        <div class="mb-3">
+                            <span class="badge {{ $order->payment->status_badge_class }}">
+                                {{ $order->payment->status_label }}
+                            </span>
+                        </div>
+
+                        <div class="small text-secondary mb-1">Nama Pengirim</div>
+                        <div class="fw-semibold mb-3">{{ $order->payment->sender_name }}</div>
+
+                        <div class="small text-secondary mb-1">Nominal Transfer</div>
+                        <div class="fw-semibold text-primary mb-3">
+                            {{ $order->payment->formatted_transfer_amount }}
+                        </div>
+
+                        @if ($order->payment->status === \App\Models\Payment::STATUS_REJECTED)
+                            <div class="alert alert-danger">
+                                <div class="fw-semibold">Pembayaran ditolak</div>
+                                <div class="small">{{ $order->payment->admin_note }}</div>
+                            </div>
+
+                            <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">
+                                Upload Ulang Bukti Pembayaran
+                            </a>
+                        @elseif ($order->payment->status === \App\Models\Payment::STATUS_PENDING)
+                            <div class="alert alert-warning small">
+                                Bukti pembayaran sedang menunggu verifikasi admin.
+                            </div>
+                        @else
+                            <div class="alert alert-success small">
+                                Pembayaran sudah diverifikasi.
+                            </div>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="alert alert-info">
+                    <div class="fw-semibold mb-1">Pembayaran Manual</div>
+                    <div class="small mb-3">
+                        Silakan upload bukti transfer agar pesanan dapat diverifikasi admin.
+                    </div>
+
+                    <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">
+                        Upload Bukti Pembayaran
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

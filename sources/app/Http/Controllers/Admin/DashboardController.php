@@ -7,6 +7,7 @@ use App\Models\Book;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -18,13 +19,15 @@ class DashboardController extends Controller
         $totalCustomers = User::query()->where('role', 'customer')->count();
         $totalOrders = Order::query()->count();
         $lowStockBooks = Book::query()->where('stock', '<=', 5)->count();
+        $pendingPayments = Payment::query()->where('status', Payment::STATUS_PENDING)->count();
 
         return view('admin.dashboard', compact(
             'totalBooks',
             'totalCategories',
             'totalCustomers',
             'totalOrders',
-            'lowStockBooks'
+            'lowStockBooks',
+            'pendingPayments'
         ));
     }
 }

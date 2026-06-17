@@ -48,7 +48,10 @@
             <span>Pesanan</span>
         </a>
 
-        <a href="#" class="admin-nav-link disabled" aria-disabled="true">
+        <a
+            href="{{ route('admin.payments.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}"
+        >
             <i class="bi bi-credit-card"></i>
             <span>Pembayaran</span>
         </a>

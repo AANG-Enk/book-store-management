@@ -188,3 +188,19 @@ a {
 .cart-summary-card {
     top: 92px;
 }
+
+.payment-proof-preview {
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    border-radius: 14px;
+    background-color: #f8fafc;
+}
+
+.payment-proof-admin {
+    width: 100%;
+    max-height: 720px;
+    object-fit: contain;
+    border-radius: 14px;
+    background-color: #f8fafc;
+}

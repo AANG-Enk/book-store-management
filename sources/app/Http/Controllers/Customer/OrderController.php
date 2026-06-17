@@ -22,7 +22,7 @@ class OrderController extends Controller
     {
         abort_if($order->user_id !== auth()->id(), 403);
 
-        $order->load(['items.book.category']);
+        $order->load(['items.book.category', 'payment']);
 
         return view('customer.orders.show', compact('order'));
     }

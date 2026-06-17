@@ -3,11 +3,13 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\BookController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\OrderController;
+use App\Http\Controllers\Customer\PaymentController as CustomerPaymentController;
 
 use App\Http\Controllers\Public\BookCatalogController;
 
@@ -36,6 +38,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
             Route::resource('categories', CategoryController::class);
             Route::resource('books', BookController::class);
+
+            Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments.index');
+            Route::get('/payments/{payment}', [AdminPaymentController::class, 'show'])->name('payments.show');
+            Route::patch('/payments/{payment}/verify', [AdminPaymentController::class, 'verify'])->name('payments.verify');
+            Route::patch('/payments/{payment}/reject', [AdminPaymentController::class, 'reject'])->name('payments.reject');
         });
 
     Route::prefix('customer')
@@ -55,6 +62,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
             Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+            Route::get('/orders/{order}/payment', [CustomerPaymentController::class, 'create'])->name('payments.create');
+            Route::post('/orders/{order}/payment', [CustomerPaymentController::class, 'store'])->name('payments.store');
         });
 });
 
