@@ -40,3 +40,72 @@ a {
     max-width: 460px;
     margin: 60px auto;
 }
+
+.admin-shell {
+    min-height: 100vh;
+    display: flex;
+    background-color: #f8fafc;
+}
+
+.admin-sidebar {
+    width: 280px;
+    min-height: 100vh;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+}
+
+.admin-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.admin-topbar {
+    min-height: 68px;
+}
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255, 255, 255, 0.78);
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    transition: 0.15s ease;
+}
+
+.admin-nav-link:hover,
+.admin-nav-link.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.admin-nav-link.disabled {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+@media (max-width: 991.98px) {
+    .admin-shell {
+        display: block;
+    }
+
+    .admin-sidebar {
+        width: 100%;
+        min-height: auto;
+        position: static;
+    }
+
+    .admin-sidebar nav {
+        display: grid;
+        gap: 4px;
+    }
+
+    .admin-topbar .container-fluid {
+        align-items: flex-start;
+        gap: 12px;
+        flex-direction: column;
+    }
+}
