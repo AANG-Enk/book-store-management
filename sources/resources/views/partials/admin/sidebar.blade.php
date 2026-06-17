@@ -43,7 +43,10 @@
 
         <div class="small text-white-50 text-uppercase mt-4 mb-2">Transaksi</div>
 
-        <a href="#" class="admin-nav-link disabled" aria-disabled="true">
+        <a
+            href="{{ route('admin.orders.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}"
+        >
             <i class="bi bi-bag-check"></i>
             <span>Pesanan</span>
         </a>

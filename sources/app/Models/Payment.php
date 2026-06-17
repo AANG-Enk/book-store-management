@@ -39,7 +39,7 @@ class Payment extends Model
 
     public function getProofUrlAttribute(): string
     {
-        return Storage::url($this->proof_image);
+        return asset('storage/'.$this->proof_image);
     }
 
     public function getFormattedTransferAmountAttribute(): string

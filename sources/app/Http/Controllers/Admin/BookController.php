@@ -130,6 +130,18 @@ class BookController extends Controller
 
     public function destroy(Book $book): RedirectResponse
     {
+        if ($book->orderItems()->exists()) {
+            return redirect()
+                ->route('admin.books.index')
+                ->with('error', 'Buku tidak bisa dihapus karena sudah pernah masuk ke pesanan.');
+        }
+
+        if ($book->cartItems()->exists()) {
+            return redirect()
+                ->route('admin.books.index')
+                ->with('error', 'Buku tidak bisa dihapus karena masih ada di keranjang customer.');
+        }
+
         if ($book->cover_image) {
             Storage::disk('public')->delete($book->cover_image);
         }
