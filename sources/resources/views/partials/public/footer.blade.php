@@ -45,15 +45,8 @@
         <hr class="border-secondary my-4">
 
         <div class="d-flex flex-column flex-md-row justify-content-between gap-2 text-white-50 small">
-            <div>
-                &copy; {{ now()->year }} BookStore. All rights reserved.
-            </div>
-            <div>
-                Sistem Informasi Toko Buku Online.
-            </div>
-            <div>
-                Made With ❤️ By <a href="https://labkerkomit.com" target="_blank">LabKerKomIT Community</a>
-            </div>
+            <div>&copy; {{ now()->year }} BookStore. All rights reserved.</div>
+            <div>Sistem Informasi Toko Buku Online.</div>
         </div>
     </div>
 </footer>

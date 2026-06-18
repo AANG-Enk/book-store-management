@@ -8,9 +8,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+
     @include('partials.customer.navbar')
 
-    <main class="py-4">
+    <main id="main-content" tabindex="-1" class="py-4">
         <div class="container">
             @include('partials.flash')
 

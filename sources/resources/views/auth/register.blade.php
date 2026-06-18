@@ -3,8 +3,10 @@
         <div class="card border-0 shadow-sm">
             <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
-                    <a href="{{ route('home') }}" class="d-inline-flex align-items-center gap-2 text-dark fw-bold fs-4">
-                        <i class="bi bi-book-half text-primary"></i>
+                    <a href="{{ route('home') }}" class="d-inline-flex flex-column align-items-center gap-2 text-dark fw-bold fs-4">
+                        <span class="auth-brand-mark" aria-hidden="true">
+                            <i class="bi bi-book-half"></i>
+                        </span>
                         <span>BookStore</span>
                     </a>
                     <p class="text-secondary mt-2 mb-0">Buat akun customer baru</p>

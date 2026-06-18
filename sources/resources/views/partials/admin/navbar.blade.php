@@ -1,23 +1,18 @@
-<nav class="navbar navbar-expand bg-white border-bottom admin-topbar">
-    <div class="container-fluid">
+<header class="admin-topbar border-bottom sticky-top">
+    <div class="container-fluid py-3 d-flex justify-content-between align-items-center">
         <div>
-            <div class="fw-semibold">@yield('page_title', 'Dashboard')</div>
-            <div class="small text-secondary">Panel administrasi BookStore</div>
+            <div class="small text-secondary">BookStore Admin</div>
+            <h1 class="h5 fw-bold mb-0">@yield('page_title', 'Dashboard')</h1>
         </div>
 
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('home') }}" class="btn btn-outline-secondary btn-sm" target="_blank">
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('home') }}" target="_blank" class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-box-arrow-up-right me-1"></i>
                 Lihat Website
             </a>
 
             <div class="dropdown">
-                <button
-                    class="btn btn-light border dropdown-toggle btn-sm"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                >
+                <button class="btn btn-light border dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-person-circle me-1"></i>
                     {{ auth()->user()->name }}
                 </button>
@@ -28,9 +23,7 @@
                             <i class="bi bi-person me-2"></i>Profil
                         </a>
                     </li>
-
                     <li><hr class="dropdown-divider"></li>
-
                     <li>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -43,4 +36,4 @@
             </div>
         </div>
     </div>
-</nav>
+</header>

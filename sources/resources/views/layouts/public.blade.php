@@ -8,9 +8,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Lewati ke konten utama</a>
+
     @include('partials.public.navbar')
 
-    <main>
+    <main id="main-content" tabindex="-1">
         @yield('content')
     </main>
 

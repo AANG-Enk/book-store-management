@@ -8,7 +8,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <main class="min-vh-100 d-flex align-items-center justify-content-center bg-light py-5">
+    <main class="auth-shell">
         <div class="container">
             {{ $slot }}
         </div>
