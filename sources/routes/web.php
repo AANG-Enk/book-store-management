@@ -67,6 +67,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/reports/payments/export', [ReportController::class, 'exportPayments'])->name('reports.payments.export');
             Route::get('/reports/stocks/export', [ReportController::class, 'exportStocks'])->name('reports.stocks.export');
             Route::get('/reports/customers/export', [ReportController::class, 'exportCustomers'])->name('reports.customers.export');
+
+            Route::get('/reports/sales/pdf', [ReportController::class, 'exportSalesPdf'])->name('reports.sales.pdf');
+            Route::get('/reports/payments/pdf', [ReportController::class, 'exportPaymentsPdf'])->name('reports.payments.pdf');
+            Route::get('/reports/stocks/pdf', [ReportController::class, 'exportStocksPdf'])->name('reports.stocks.pdf');
+            Route::get('/reports/customers/pdf', [ReportController::class, 'exportCustomersPdf'])->name('reports.customers.pdf');
         });
 
     Route::prefix('customer')

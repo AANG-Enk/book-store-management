@@ -21,6 +21,20 @@
                 Export Excel
             </a>
 
+            <a
+                href="{{ route('admin.reports.customers.pdf', request()->query()) }}"
+                class="btn btn-danger"
+                target="_blank"
+            >
+                <i class="bi bi-file-earmark-pdf me-1"></i>
+                Export PDF
+            </a>
+
+            <button type="button" class="btn btn-outline-dark" onclick="window.print()">
+                <i class="bi bi-printer me-1"></i>
+                Print
+            </button>
+
             <a href="{{ route('admin.reports.index') }}" class="btn btn-outline-secondary">
                 Kembali ke Laporan
             </a>

@@ -70,6 +70,10 @@
                         <a href="{{ route('admin.reports.sales.export') }}" class="btn btn-outline-success btn-sm">
                             Export Excel
                         </a>
+
+                        <a href="{{ route('admin.reports.sales.pdf') }}" class="btn btn-outline-danger btn-sm" target="_blank">
+                            PDF
+                        </a>
                     </div>
                 </div>
             </div>
@@ -92,6 +96,10 @@
 
                         <a href="{{ route('admin.reports.payments.export') }}" class="btn btn-outline-success btn-sm">
                             Export Excel
+                        </a>
+
+                        <a href="{{ route('admin.reports.payments.pdf') }}" class="btn btn-outline-danger btn-sm" target="_blank">
+                            PDF
                         </a>
                     </div>
                 </div>
@@ -116,6 +124,10 @@
                         <a href="{{ route('admin.reports.stocks.export') }}" class="btn btn-outline-success btn-sm">
                             Export Excel
                         </a>
+
+                        <a href="{{ route('admin.reports.stocks.pdf') }}" class="btn btn-outline-danger btn-sm" target="_blank">
+                            PDF
+                        </a>
                     </div>
                 </div>
             </div>
@@ -138,6 +150,10 @@
 
                         <a href="{{ route('admin.reports.customers.export') }}" class="btn btn-outline-success btn-sm">
                             Export Excel
+                        </a>
+
+                        <a href="{{ route('admin.reports.customers.pdf') }}" class="btn btn-outline-danger btn-sm" target="_blank">
+                            PDF
                         </a>
                     </div>
                 </div>

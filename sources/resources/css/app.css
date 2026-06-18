@@ -204,3 +204,41 @@ a {
     border-radius: 14px;
     background-color: #f8fafc;
 }
+
+@media print {
+    .admin-sidebar,
+    .admin-topbar,
+    .btn,
+    form,
+    .pagination,
+    .alert {
+        display: none !important;
+    }
+
+    .admin-shell {
+        display: block;
+        background: #ffffff;
+    }
+
+    .admin-main {
+        width: 100%;
+    }
+
+    main.container-fluid {
+        padding: 0 !important;
+    }
+
+    .card {
+        border: 1px solid #dee2e6 !important;
+        box-shadow: none !important;
+    }
+
+    body {
+        background: #ffffff !important;
+    }
+
+    a {
+        color: #111827 !important;
+        text-decoration: none !important;
+    }
+}

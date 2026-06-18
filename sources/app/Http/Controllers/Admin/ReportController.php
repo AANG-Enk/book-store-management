@@ -17,6 +17,9 @@ use App\Exports\StocksReportExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
+
 class ReportController extends Controller
 {
     public function index(): View
@@ -275,6 +278,148 @@ class ReportController extends Controller
             new CustomersReportExport($search),
             $fileName
         );
+    }
+
+    public function exportSalesPdf(Request $request): Response
+    {
+        $startDate = $request->string('start_date')->toString() ?: null;
+        $endDate = $request->string('end_date')->toString() ?: null;
+        $status = $request->string('status')->toString() ?: null;
+
+        $orders = Order::query()
+            ->with(['items'])
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->latest()
+            ->get();
+
+        $totalOrders = $orders->count();
+        $totalSales = $orders->sum('total_price');
+
+        $pdf = Pdf::loadView('admin.reports.pdf.sales', compact(
+            'orders',
+            'startDate',
+            'endDate',
+            'status',
+            'totalOrders',
+            'totalSales'
+        ))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan-penjualan-' . now()->format('Ymd-His') . '.pdf');
+    }
+
+    public function exportPaymentsPdf(Request $request): Response
+    {
+        $startDate = $request->string('start_date')->toString() ?: null;
+        $endDate = $request->string('end_date')->toString() ?: null;
+        $status = $request->string('status')->toString() ?: null;
+
+        $payments = Payment::query()
+            ->with('order')
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            })
+            ->when($status, function ($query) use ($status) {
+                $query->where('status', $status);
+            })
+            ->latest()
+            ->get();
+
+        $totalPayments = $payments->count();
+        $totalTransfer = $payments->sum('transfer_amount');
+
+        $pdf = Pdf::loadView('admin.reports.pdf.payments', compact(
+            'payments',
+            'startDate',
+            'endDate',
+            'status',
+            'totalPayments',
+            'totalTransfer'
+        ))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan-pembayaran-' . now()->format('Ymd-His') . '.pdf');
+    }
+
+    public function exportStocksPdf(Request $request): Response
+    {
+        $search = $request->string('search')->toString() ?: null;
+        $stockStatus = $request->string('stock_status')->toString() ?: null;
+
+        $books = Book::query()
+            ->with(['category', 'supplier'])
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery
+                        ->where('title', 'like', "%{$search}%")
+                        ->orWhere('author', 'like', "%{$search}%")
+                        ->orWhere('isbn', 'like', "%{$search}%");
+                });
+            })
+            ->when($stockStatus === 'empty', function ($query) {
+                $query->where('stock', 0);
+            })
+            ->when($stockStatus === 'low', function ($query) {
+                $query->where('stock', '>', 0)->where('stock', '<=', 5);
+            })
+            ->when($stockStatus === 'safe', function ($query) {
+                $query->where('stock', '>', 5);
+            })
+            ->orderBy('stock')
+            ->get();
+
+        $totalBooks = $books->count();
+        $emptyStock = $books->where('stock', 0)->count();
+        $lowStock = $books->where('stock', '>', 0)->where('stock', '<=', 5)->count();
+
+        $pdf = Pdf::loadView('admin.reports.pdf.stocks', compact(
+            'books',
+            'search',
+            'stockStatus',
+            'totalBooks',
+            'emptyStock',
+            'lowStock'
+        ))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan-stok-buku-' . now()->format('Ymd-His') . '.pdf');
+    }
+
+    public function exportCustomersPdf(Request $request): Response
+    {
+        $search = $request->string('search')->toString() ?: null;
+
+        $customers = User::query()
+            ->where('role', 'customer')
+            ->withCount('orders')
+            ->withSum('orders', 'total_price')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($subQuery) use ($search) {
+                    $subQuery
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->get();
+
+        $totalCustomers = $customers->count();
+
+        $pdf = Pdf::loadView('admin.reports.pdf.customers', compact(
+            'customers',
+            'search',
+            'totalCustomers'
+        ))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('laporan-customer-' . now()->format('Ymd-His') . '.pdf');
     }
 
     private function orderStatuses(): array
