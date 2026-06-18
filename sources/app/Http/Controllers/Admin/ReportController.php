@@ -10,6 +10,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+use App\Exports\CustomersReportExport;
+use App\Exports\PaymentsReportExport;
+use App\Exports\SalesReportExport;
+use App\Exports\StocksReportExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 class ReportController extends Controller
 {
     public function index(): View
@@ -215,6 +222,59 @@ class ReportController extends Controller
             'search',
             'totalCustomers'
         ));
+    }
+
+    public function exportSales(Request $request): BinaryFileResponse
+    {
+        $startDate = $request->string('start_date')->toString() ?: null;
+        $endDate = $request->string('end_date')->toString() ?: null;
+        $status = $request->string('status')->toString() ?: null;
+
+        $fileName = 'laporan-penjualan-' . now()->format('Ymd-His') . '.xlsx';
+
+        return Excel::download(
+            new SalesReportExport($startDate, $endDate, $status),
+            $fileName
+        );
+    }
+
+    public function exportPayments(Request $request): BinaryFileResponse
+    {
+        $startDate = $request->string('start_date')->toString() ?: null;
+        $endDate = $request->string('end_date')->toString() ?: null;
+        $status = $request->string('status')->toString() ?: null;
+
+        $fileName = 'laporan-pembayaran-' . now()->format('Ymd-His') . '.xlsx';
+
+        return Excel::download(
+            new PaymentsReportExport($startDate, $endDate, $status),
+            $fileName
+        );
+    }
+
+    public function exportStocks(Request $request): BinaryFileResponse
+    {
+        $search = $request->string('search')->toString() ?: null;
+        $stockStatus = $request->string('stock_status')->toString() ?: null;
+
+        $fileName = 'laporan-stok-buku-' . now()->format('Ymd-His') . '.xlsx';
+
+        return Excel::download(
+            new StocksReportExport($search, $stockStatus),
+            $fileName
+        );
+    }
+
+    public function exportCustomers(Request $request): BinaryFileResponse
+    {
+        $search = $request->string('search')->toString() ?: null;
+
+        $fileName = 'laporan-customer-' . now()->format('Ymd-His') . '.xlsx';
+
+        return Excel::download(
+            new CustomersReportExport($search),
+            $fileName
+        );
     }
 
     private function orderStatuses(): array

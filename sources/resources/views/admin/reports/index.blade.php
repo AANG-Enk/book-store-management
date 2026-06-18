@@ -62,9 +62,15 @@
                     <p class="text-secondary">
                         Melihat daftar pesanan, total penjualan, dan status order.
                     </p>
-                    <a href="{{ route('admin.reports.sales') }}" class="btn btn-primary btn-sm">
-                        Buka Laporan
-                    </a>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('admin.reports.sales') }}" class="btn btn-primary btn-sm">
+                            Buka Laporan
+                        </a>
+
+                        <a href="{{ route('admin.reports.sales.export') }}" class="btn btn-outline-success btn-sm">
+                            Export Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,9 +85,15 @@
                     <p class="text-secondary">
                         Memantau bukti transfer, nominal pembayaran, dan status verifikasi.
                     </p>
-                    <a href="{{ route('admin.reports.payments') }}" class="btn btn-primary btn-sm">
-                        Buka Laporan
-                    </a>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('admin.reports.payments') }}" class="btn btn-primary btn-sm">
+                            Buka Laporan
+                        </a>
+
+                        <a href="{{ route('admin.reports.payments.export') }}" class="btn btn-outline-success btn-sm">
+                            Export Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -96,9 +108,15 @@
                     <p class="text-secondary">
                         Melihat buku stok aman, stok menipis, dan stok habis.
                     </p>
-                    <a href="{{ route('admin.reports.stocks') }}" class="btn btn-primary btn-sm">
-                        Buka Laporan
-                    </a>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('admin.reports.stocks') }}" class="btn btn-primary btn-sm">
+                            Buka Laporan
+                        </a>
+
+                        <a href="{{ route('admin.reports.stocks.export') }}" class="btn btn-outline-success btn-sm">
+                            Export Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,9 +131,15 @@
                     <p class="text-secondary">
                         Melihat daftar customer, jumlah order, dan total belanja.
                     </p>
-                    <a href="{{ route('admin.reports.customers') }}" class="btn btn-primary btn-sm">
-                        Buka Laporan
-                    </a>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('admin.reports.customers') }}" class="btn btn-primary btn-sm">
+                            Buka Laporan
+                        </a>
+
+                        <a href="{{ route('admin.reports.customers.export') }}" class="btn btn-outline-success btn-sm">
+                            Export Excel
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

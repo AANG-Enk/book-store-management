@@ -62,6 +62,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/reports/payments', [ReportController::class, 'payments'])->name('reports.payments');
             Route::get('/reports/stocks', [ReportController::class, 'stocks'])->name('reports.stocks');
             Route::get('/reports/customers', [ReportController::class, 'customers'])->name('reports.customers');
+
+            Route::get('/reports/sales/export', [ReportController::class, 'exportSales'])->name('reports.sales.export');
+            Route::get('/reports/payments/export', [ReportController::class, 'exportPayments'])->name('reports.payments.export');
+            Route::get('/reports/stocks/export', [ReportController::class, 'exportStocks'])->name('reports.stocks.export');
+            Route::get('/reports/customers/export', [ReportController::class, 'exportCustomers'])->name('reports.customers.export');
         });
 
     Route::prefix('customer')

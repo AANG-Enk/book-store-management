@@ -12,9 +12,19 @@
             </p>
         </div>
 
-        <a href="{{ route('admin.reports.index') }}" class="btn btn-outline-secondary">
-            Kembali ke Laporan
-        </a>
+        <div class="d-flex gap-2">
+            <a
+                href="{{ route('admin.reports.customers.export', request()->query()) }}"
+                class="btn btn-success"
+            >
+                <i class="bi bi-file-earmark-excel me-1"></i>
+                Export Excel
+            </a>
+
+            <a href="{{ route('admin.reports.index') }}" class="btn btn-outline-secondary">
+                Kembali ke Laporan
+            </a>
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm mb-4">
