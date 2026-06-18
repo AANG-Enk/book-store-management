@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\BookStockController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ContactMessageController;
 
 use App\Http\Controllers\Customer\DashboardController as CustomerDashboardController;
 use App\Http\Controllers\Customer\CartController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\Customer\PaymentController as CustomerPaymentController;
 
 use App\Http\Controllers\Public\BookCatalogController;
+use App\Http\Controllers\Public\PageController;
 
 use App\Http\Controllers\DashboardRedirectController;
 use App\Http\Controllers\ProfileController;
@@ -27,6 +29,10 @@ Route::get('/', function () {
 
 Route::get('/katalog', [BookCatalogController::class, 'index'])->name('books.index');
 Route::get('/katalog/{book:slug}', [BookCatalogController::class, 'show'])->name('books.show');
+
+Route::get('/tentang', [PageController::class, 'about'])->name('about');
+Route::get('/kontak', [PageController::class, 'contact'])->name('contact');
+Route::post('/kontak', [PageController::class, 'submitContact'])->name('contact.submit');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardRedirectController::class)->name('dashboard');
@@ -72,6 +78,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/reports/payments/pdf', [ReportController::class, 'exportPaymentsPdf'])->name('reports.payments.pdf');
             Route::get('/reports/stocks/pdf', [ReportController::class, 'exportStocksPdf'])->name('reports.stocks.pdf');
             Route::get('/reports/customers/pdf', [ReportController::class, 'exportCustomersPdf'])->name('reports.customers.pdf');
+
+            Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+            Route::get('/contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+            Route::patch('/contact-messages/{contactMessage}/read', [ContactMessageController::class, 'markAsRead'])->name('contact-messages.read');
+            Route::delete('/contact-messages/{contactMessage}', [ContactMessageController::class, 'destroy'])->name('contact-messages.destroy');
         });
 
     Route::prefix('customer')

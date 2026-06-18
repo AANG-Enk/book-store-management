@@ -111,5 +111,19 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h5 fw-bold">Pesan Kontak</h2>
+                    <p class="text-secondary">
+                        Ada {{ $unreadContactMessages }} pesan kontak yang belum dibaca.
+                    </p>
+                    <a href="{{ route('admin.contact-messages.index') }}" class="btn btn-outline-primary btn-sm">
+                        Buka Pesan
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection

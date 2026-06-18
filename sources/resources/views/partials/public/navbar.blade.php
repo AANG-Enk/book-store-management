@@ -38,13 +38,19 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" aria-disabled="true">
+                    <a
+                        class="nav-link {{ request()->routeIs('about') ? 'active fw-semibold text-primary' : '' }}"
+                        href="{{ route('about') }}"
+                    >
                         Tentang
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" aria-disabled="true">
+                    <a
+                        class="nav-link {{ request()->routeIs('contact') ? 'active fw-semibold text-primary' : '' }}"
+                        href="{{ route('contact') }}"
+                    >
                         Kontak
                     </a>
                 </li>

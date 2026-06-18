@@ -62,6 +62,14 @@
             <span>Pembayaran</span>
         </a>
 
+        <a
+            href="{{ route('admin.contact-messages.index') }}"
+            class="admin-nav-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}"
+        >
+            <i class="bi bi-envelope"></i>
+            <span>Pesan Kontak</span>
+        </a>
+
         <div class="small text-white-50 text-uppercase mt-4 mb-2">Laporan</div>
 
         <a

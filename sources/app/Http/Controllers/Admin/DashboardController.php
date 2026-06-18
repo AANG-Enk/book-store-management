@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\ContactMessage;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -20,6 +21,9 @@ class DashboardController extends Controller
         $totalOrders = Order::query()->count();
         $lowStockBooks = Book::query()->where('stock', '<=', 5)->count();
         $pendingPayments = Payment::query()->where('status', Payment::STATUS_PENDING)->count();
+        $unreadContactMessages = ContactMessage::query()
+                ->where('is_read', false)
+                ->count();
 
         return view('admin.dashboard', compact(
             'totalBooks',
@@ -27,7 +31,8 @@ class DashboardController extends Controller
             'totalCustomers',
             'totalOrders',
             'lowStockBooks',
-            'pendingPayments'
+            'pendingPayments',
+            'unreadContactMessages'
         ));
     }
 }

@@ -26,6 +26,14 @@
                         Daftar
                     </a>
                 @endauth
+
+                <a href="{{ route('books.index') }}" class="btn btn-outline-secondary">
+                    Lihat Katalog
+                </a>
+
+                <a href="{{ route('contact') }}" class="btn btn-outline-primary">
+                    Hubungi Kami
+                </a>
             </div>
         </div>
     </nav>
