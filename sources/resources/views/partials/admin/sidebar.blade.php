@@ -62,12 +62,22 @@
             <span>Pembayaran</span>
         </a>
 
+        @php
+            $unreadSidebarMessages = \App\Models\ContactMessage::query()
+                ->where('is_read', false)
+                ->count();
+        @endphp
+
         <a
             href="{{ route('admin.contact-messages.index') }}"
             class="admin-nav-link {{ request()->routeIs('admin.contact-messages.*') ? 'active' : '' }}"
         >
             <i class="bi bi-envelope"></i>
             <span>Pesan Kontak</span>
+
+            @if ($unreadSidebarMessages > 0)
+                <span class="badge text-bg-warning ms-auto">{{ $unreadSidebarMessages }}</span>
+            @endif
         </a>
 
         <div class="small text-white-50 text-uppercase mt-4 mb-2">Laporan</div>

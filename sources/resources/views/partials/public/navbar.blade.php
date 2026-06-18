@@ -18,7 +18,7 @@
         </button>
 
         <div class="collapse navbar-collapse" id="publicNavbar">
-            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a
                         class="nav-link {{ request()->routeIs('home') ? 'active fw-semibold text-primary' : '' }}"
@@ -55,6 +55,7 @@
                     </a>
                 </li>
             </ul>
+
 
             <div class="d-flex gap-2">
                 @auth
