@@ -19,7 +19,7 @@
 
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card content-card mb-4">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Item Pesanan</h2>
 
@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div class="card content-card">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Informasi Customer & Pengiriman</h2>
 
@@ -94,7 +94,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card content-card mb-4">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Status Order</h2>
 
@@ -140,7 +140,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card content-card mb-4">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Ringkasan</h2>
 
@@ -167,7 +167,7 @@
             </div>
 
             @if ($order->payment)
-                <div class="card border-0 shadow-sm">
+                <div class="card content-card">
                     <div class="card-body p-4">
                         <h2 class="h5 fw-bold mb-3">Pembayaran</h2>
 

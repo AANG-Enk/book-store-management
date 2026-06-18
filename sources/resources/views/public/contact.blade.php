@@ -3,7 +3,7 @@
 @section('title', 'Kontak - BookStore')
 
 @section('content')
-    <section class="py-5 bg-white border-bottom">
+    <section class="py-5 soft-panel border-bottom">
         <div class="container">
             <div class="row align-items-end g-4">
                 <div class="col-lg-8">
@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card content-card">
                         <div class="card-body">
                             <div class="d-flex gap-3 align-items-start mb-3">
                                 <i class="bi bi-envelope text-primary fs-4"></i>
@@ -47,7 +47,7 @@
 
             <div class="row g-4">
                 <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card content-card">
                         <div class="card-body p-4 p-lg-5">
                             <h2 class="h4 fw-bold mb-3">Form Kontak</h2>
 
@@ -150,7 +150,7 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card content-card h-100">
                         <div class="card-body p-4 p-lg-5">
                             <h2 class="h4 fw-bold mb-3">Informasi</h2>
 

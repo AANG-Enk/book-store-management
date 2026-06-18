@@ -3,7 +3,7 @@
 @section('title', 'Tentang Kami - BookStore')
 
 @section('content')
-    <section class="py-5 bg-white border-bottom">
+    <section class="py-5 soft-panel border-bottom">
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-7">
@@ -20,7 +20,7 @@
                 </div>
 
                 <div class="col-lg-5">
-                    <div class="card border-0 shadow-sm">
+                    <div class="card content-card">
                         <div class="card-body p-5 text-center">
                             <div class="display-1 text-primary mb-3">
                                 <i class="bi bi-book-half"></i>
@@ -40,7 +40,7 @@
         <div class="container">
             <div class="row g-4 mb-5">
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card content-card h-100">
                         <div class="card-body p-4">
                             <i class="bi bi-search fs-2 text-primary"></i>
                             <h2 class="h5 fw-bold mt-3">Katalog Mudah Dicari</h2>
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card content-card h-100">
                         <div class="card-body p-4">
                             <i class="bi bi-cart-check fs-2 text-primary"></i>
                             <h2 class="h5 fw-bold mt-3">Belanja Bertahap</h2>
@@ -64,7 +64,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card content-card h-100">
                         <div class="card-body p-4">
                             <i class="bi bi-clipboard-data fs-2 text-primary"></i>
                             <h2 class="h5 fw-bold mt-3">Admin Terstruktur</h2>
@@ -76,7 +76,7 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm">
+            <div class="card content-card">
                 <div class="card-body p-4 p-lg-5">
                     <div class="row g-4 align-items-center">
                         <div class="col-lg-8">

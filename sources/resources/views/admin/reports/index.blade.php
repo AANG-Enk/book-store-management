@@ -13,7 +13,7 @@
 
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Total Penjualan</p>
                     <h2 class="h5 fw-bold mb-0">
@@ -24,7 +24,7 @@
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Total Pesanan</p>
                     <h2 class="h5 fw-bold mb-0">{{ $totalOrders }}</h2>
@@ -33,7 +33,7 @@
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Pembayaran Pending</p>
                     <h2 class="h5 fw-bold mb-0">{{ $pendingPayments }}</h2>
@@ -42,7 +42,7 @@
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Customer</p>
                     <h2 class="h5 fw-bold mb-0">{{ $totalCustomers }}</h2>
@@ -53,7 +53,7 @@
 
     <div class="row g-4">
         <div class="col-md-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body p-4">
                     <div class="fs-2 text-primary mb-3">
                         <i class="bi bi-graph-up-arrow"></i>
@@ -80,7 +80,7 @@
         </div>
 
         <div class="col-md-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body p-4">
                     <div class="fs-2 text-primary mb-3">
                         <i class="bi bi-credit-card"></i>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="col-md-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body p-4">
                     <div class="fs-2 text-primary mb-3">
                         <i class="bi bi-box-seam"></i>
@@ -134,7 +134,7 @@
         </div>
 
         <div class="col-md-6 col-xl-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card content-card h-100">
                 <div class="card-body p-4">
                     <div class="fs-2 text-primary mb-3">
                         <i class="bi bi-people"></i>

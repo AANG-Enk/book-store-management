@@ -24,6 +24,8 @@
         </div>
     </div>
 
+    @include('partials.labkerkomit-watermark')
+
     @stack('scripts')
 </body>
 </html>

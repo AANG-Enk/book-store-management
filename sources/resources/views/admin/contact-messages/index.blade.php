@@ -13,7 +13,7 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card content-card mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.contact-messages.index') }}" class="row g-3 align-items-end">
                 <div class="col-md-6">
@@ -53,11 +53,11 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card content-card">
         <div class="card-body">
             @if ($messages->isEmpty())
                 <div class="text-center py-5">
-                    <div class="display-5 text-secondary mb-3">
+                    <div class="empty-state-icon mb-3 mx-auto">
                         <i class="bi bi-envelope"></i>
                     </div>
 

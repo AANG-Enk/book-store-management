@@ -15,7 +15,7 @@
 
         <div class="row g-4">
             <div class="col-lg-8">
-                <div class="card border-0 shadow-sm mb-4">
+                <div class="card content-card mb-4">
                     <div class="card-body p-4">
                         <h2 class="h5 fw-bold mb-3">Data Customer</h2>
 
@@ -107,7 +107,7 @@
                     </div>
                 </div>
 
-                <div class="card border-0 shadow-sm">
+                <div class="card content-card">
                     <div class="card-body p-4">
                         <h2 class="h5 fw-bold mb-3">Item Pesanan</h2>
 
@@ -149,7 +149,7 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="card border-0 shadow-sm sticky-lg-top cart-summary-card">
+                <div class="card content-card sticky-lg-top cart-summary-card">
                     <div class="card-body p-4">
                         <h2 class="h5 fw-bold mb-3">Ringkasan Checkout</h2>
 

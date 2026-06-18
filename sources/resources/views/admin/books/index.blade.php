@@ -18,7 +18,7 @@
         </a>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card content-card mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.books.index') }}" class="row g-3 align-items-end">
                 <div class="col-md-4">
@@ -83,11 +83,11 @@
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card content-card">
         <div class="card-body">
             @if ($books->isEmpty())
                 <div class="text-center py-5">
-                    <div class="display-5 text-secondary mb-3">
+                    <div class="empty-state-icon mb-3 mx-auto">
                         <i class="bi bi-book"></i>
                     </div>
                     <h2 class="h5 fw-bold">Belum ada buku</h2>

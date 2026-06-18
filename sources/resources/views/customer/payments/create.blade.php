@@ -25,7 +25,7 @@
 
     <div class="row g-4">
         <div class="col-lg-7">
-            <div class="card border-0 shadow-sm">
+            <div class="card content-card">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Form Pembayaran</h2>
 
@@ -116,7 +116,7 @@
         </div>
 
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm mb-4">
+            <div class="card content-card mb-4">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Ringkasan Pesanan</h2>
 
@@ -140,7 +140,7 @@
             </div>
 
             @if ($order->payment && $order->payment->proof_image)
-                <div class="card border-0 shadow-sm">
+                <div class="card content-card">
                     <div class="card-body p-4">
                         <h2 class="h5 fw-bold mb-3">Bukti Saat Ini</h2>
 

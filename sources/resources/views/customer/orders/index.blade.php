@@ -17,11 +17,11 @@
         </a>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card content-card">
         <div class="card-body">
             @if ($orders->isEmpty())
                 <div class="text-center py-5">
-                    <div class="display-5 text-secondary mb-3">
+                    <div class="empty-state-icon mb-3 mx-auto">
                         <i class="bi bi-bag"></i>
                     </div>
 

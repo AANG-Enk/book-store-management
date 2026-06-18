@@ -18,6 +18,8 @@
 
     @include('partials.public.footer')
 
+    @include('partials.labkerkomit-watermark')
+
     @stack('scripts')
 </body>
 </html>
