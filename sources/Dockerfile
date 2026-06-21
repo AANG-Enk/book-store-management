@@ -85,7 +85,10 @@ RUN sed -i 's/\r$//' /usr/local/bin/bookstore-entrypoint \
     && chown root:root /usr/local/bin/bookstore-entrypoint \
     && chmod 755 /usr/local/bin/bookstore-entrypoint \
     && mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache public
+    && chown -R www-data:www-data storage bootstrap/cache public \
+    && chmod -R a+rX app bootstrap config database public resources routes vendor \
+    && chmod a+r artisan composer.json composer.lock package.json vite.config.js \
+    && chmod -R ug+rwX storage bootstrap/cache
 
 USER www-data
 
