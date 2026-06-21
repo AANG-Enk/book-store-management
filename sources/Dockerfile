@@ -9,8 +9,33 @@ COPY resources ./resources
 COPY vite.config.* ./
 RUN npm run build
 
-FROM composer:2 AS vendor
+FROM php:8.3-fpm-alpine AS vendor
 WORKDIR /app
+
+RUN apk add --no-cache \
+    bash \
+    icu-dev \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
+    oniguruma-dev \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        bcmath \
+        exif \
+        gd \
+        intl \
+        mbstring \
+        opcache \
+        pcntl \
+        pdo_mysql \
+        zip
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY composer.json composer.lock ./
 RUN composer install \
     --no-dev \
