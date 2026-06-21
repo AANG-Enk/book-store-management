@@ -4,7 +4,7 @@ set -e
 cd /var/www/html
 
 # Ensure writable Laravel runtime folders exist after volume mounts.
-mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+# mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
 
 # Clear stale cached config/routes/views from local development.
 php artisan optimize:clear >/dev/null 2>&1 || true

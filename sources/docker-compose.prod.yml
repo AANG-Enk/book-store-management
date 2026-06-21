@@ -12,7 +12,7 @@ services:
       RUN_SEEDERS: "false"
     volumes:
       - bookstore_storage:/var/www/html/storage
-      - bookstore_cache:/var/www/html/bootstrap/cache
+      # - bookstore_cache:/var/www/html/bootstrap/cache
     depends_on:
       bookstore_mysql:
         condition: service_healthy
@@ -57,7 +57,7 @@ services:
 volumes:
   bookstore_mysql_data:
   bookstore_storage:
-  bookstore_cache:
+  # bookstore_cache:
 
 networks:
   bookstore_net:
