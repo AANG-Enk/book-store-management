@@ -80,7 +80,10 @@ COPY --from=vendor /app/vendor ./vendor
 COPY --from=assets /app/public/build ./public/build
 
 COPY docker/entrypoint.sh /usr/local/bin/bookstore-entrypoint
-RUN chmod +x /usr/local/bin/bookstore-entrypoint \
+
+RUN sed -i 's/\r$//' /usr/local/bin/bookstore-entrypoint \
+    && chown root:root /usr/local/bin/bookstore-entrypoint \
+    && chmod 755 /usr/local/bin/bookstore-entrypoint \
     && mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache public
 
