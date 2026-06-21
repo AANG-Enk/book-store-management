@@ -1,0 +1,64 @@
+services:
+  bookstore_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookstore_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      RUN_MIGRATIONS: "true"
+      RUN_SEEDERS: "false"
+    volumes:
+      - bookstore_storage:/var/www/html/storage
+      - bookstore_cache:/var/www/html/bootstrap/cache
+    depends_on:
+      bookstore_mysql:
+        condition: service_healthy
+    networks:
+      - bookstore_net
+
+  bookstore_nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    container_name: bookstore_nginx
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    volumes:
+      - bookstore_storage:/var/www/html/storage:ro
+    depends_on:
+      - bookstore_app
+    networks:
+      - bookstore_net
+
+  bookstore_mysql:
+    image: mysql:8.4
+    container_name: bookstore_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-bookstore}
+      MYSQL_USER: ${DB_USERNAME:-bookstore_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-change_this_password}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-change_this_root_password}
+      TZ: Asia/Jakarta
+    volumes:
+      - bookstore_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD:-change_this_root_password}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - bookstore_net
+
+volumes:
+  bookstore_mysql_data:
+  bookstore_storage:
+  bookstore_cache:
+
+networks:
+  bookstore_net:
+    driver: bridge
