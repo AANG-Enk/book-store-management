@@ -35,6 +35,9 @@ class CheckoutController extends Controller
             'customer_email' => ['required', 'email', 'max:150'],
             'customer_phone' => ['nullable', 'string', 'max:30'],
             'shipping_address' => ['required', 'string', 'max:1000'],
+            'shipping_province' => ['required', 'string', 'max:100'],
+            'shipping_city' => ['required', 'string', 'max:100'],
+            'shipping_postal_code' => ['nullable', 'string', 'max:20'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -61,7 +64,9 @@ class CheckoutController extends Controller
         }
 
         $order = DB::transaction(function () use ($validated, $cartItems) {
-            $totalPrice = $cartItems->sum(fn (CartItem $item) => $item->subtotal);
+            $subtotalPrice = $cartItems->sum(fn (CartItem $item) => $item->subtotal);
+            $shippingCost = 0;
+            $totalPrice = $subtotalPrice + $shippingCost;
 
             $order = Order::query()->create([
                 'user_id' => auth()->id(),
@@ -70,8 +75,13 @@ class CheckoutController extends Controller
                 'customer_email' => $validated['customer_email'],
                 'customer_phone' => $validated['customer_phone'] ?? null,
                 'shipping_address' => $validated['shipping_address'],
+                'shipping_province' => $validated['shipping_province'],
+                'shipping_city' => $validated['shipping_city'],
+                'shipping_postal_code' => $validated['shipping_postal_code'] ?? null,
+                'subtotal_price' => $subtotalPrice,
+                'shipping_cost' => $shippingCost,
                 'total_price' => $totalPrice,
-                'status' => Order::STATUS_WAITING_PAYMENT,
+                'status' => Order::STATUS_WAITING_SHIPPING,
                 'notes' => $validated['notes'] ?? null,
             ]);
 
@@ -107,7 +117,7 @@ class CheckoutController extends Controller
 
         return redirect()
             ->route('customer.orders.show', $order)
-            ->with('success', 'Checkout berhasil. Silakan lanjutkan ke pembayaran manual.');
+            ->with('success', 'Checkout berhasil. Pesanan menunggu admin menentukan ongkos kirim.');
     }
 
     private function getCartItems()

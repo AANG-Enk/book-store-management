@@ -16,6 +16,15 @@
         </a>
     </div>
 
+    @if ($order->status === \App\Models\Order::STATUS_WAITING_SHIPPING)
+        <div class="alert alert-warning">
+            <div class="fw-semibold mb-1">Pesanan menunggu ongkos kirim.</div>
+            <div class="small">
+                Admin akan menentukan kurir dan ongkir secara manual. Tombol upload pembayaran akan aktif setelah ongkir dikonfirmasi.
+            </div>
+        </div>
+    @endif
+
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="card content-card mb-4">
@@ -53,6 +62,20 @@
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <th colspan="3" class="text-end">Subtotal Buku</th>
+                                    <th class="text-end">{{ $order->formatted_subtotal_price }}</th>
+                                </tr>
+                                <tr>
+                                    <th colspan="3" class="text-end">Ongkos Kirim</th>
+                                    <th class="text-end">
+                                        @if ($order->is_shipping_confirmed)
+                                            {{ $order->formatted_shipping_cost }}
+                                        @else
+                                            <span class="text-warning">Menunggu admin</span>
+                                        @endif
+                                    </th>
+                                </tr>
+                                <tr>
                                     <th colspan="3" class="text-end">Total</th>
                                     <th class="text-end text-primary">
                                         {{ $order->formatted_total_price }}
@@ -64,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="card content-card">
+            <div class="card content-card mb-4">
                 <div class="card-body p-4">
                     <h2 class="h5 fw-bold mb-3">Informasi Pengiriman</h2>
 
@@ -78,11 +101,31 @@
                         <dt class="col-sm-4">No. Telepon</dt>
                         <dd class="col-sm-8">{{ $order->customer_phone ?: '-' }}</dd>
 
+                        <dt class="col-sm-4">Wilayah</dt>
+                        <dd class="col-sm-8">{{ $order->shipping_area }}</dd>
+
                         <dt class="col-sm-4">Alamat</dt>
                         <dd class="col-sm-8" style="white-space: pre-line;">{{ $order->shipping_address }}</dd>
 
                         <dt class="col-sm-4">Catatan</dt>
                         <dd class="col-sm-8" style="white-space: pre-line;">{{ $order->notes ?: '-' }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card content-card">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-3">Kurir & Resi</h2>
+
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Kurir</dt>
+                        <dd class="col-sm-8">{{ $order->shipping_courier_label }}</dd>
+
+                        <dt class="col-sm-4">Nomor Resi</dt>
+                        <dd class="col-sm-8">{{ $order->tracking_number ?: '-' }}</dd>
+
+                        <dt class="col-sm-4">Tanggal Dikirim</dt>
+                        <dd class="col-sm-8">{{ $order->shipped_at?->format('d M Y H:i') ?? '-' }}</dd>
                     </dl>
                 </div>
             </div>
@@ -102,6 +145,18 @@
                     <div class="small text-secondary mb-2">Tanggal Pesanan</div>
                     <div class="fw-semibold mb-3">
                         {{ $order->created_at->format('d M Y H:i') }}
+                    </div>
+
+                    <div class="small text-secondary mb-2">Subtotal Buku</div>
+                    <div class="fw-semibold mb-3">{{ $order->formatted_subtotal_price }}</div>
+
+                    <div class="small text-secondary mb-2">Ongkos Kirim</div>
+                    <div class="fw-semibold mb-3">
+                        @if ($order->is_shipping_confirmed)
+                            {{ $order->formatted_shipping_cost }}
+                        @else
+                            <span class="text-warning">Menunggu admin</span>
+                        @endif
                     </div>
 
                     <div class="small text-secondary mb-2">Total Pembayaran</div>
@@ -150,11 +205,18 @@
                         @endif
                     </div>
                 </div>
+            @elseif ($order->status === \App\Models\Order::STATUS_WAITING_SHIPPING)
+                <div class="alert alert-warning">
+                    <div class="fw-semibold mb-1">Belum bisa upload pembayaran</div>
+                    <div class="small">
+                        Admin perlu menentukan ongkos kirim terlebih dahulu.
+                    </div>
+                </div>
             @else
                 <div class="alert alert-info">
                     <div class="fw-semibold mb-1">Pembayaran Manual</div>
                     <div class="small mb-3">
-                        Silakan upload bukti transfer agar pesanan dapat diverifikasi admin.
+                        Silakan upload bukti transfer sesuai total pembayaran.
                     </div>
 
                     <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">

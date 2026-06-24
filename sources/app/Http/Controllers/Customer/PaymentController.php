@@ -12,9 +12,15 @@ use Illuminate\View\View;
 
 class PaymentController extends Controller
 {
-    public function create(Order $order): View
+    public function create(Order $order): View|RedirectResponse
     {
         $this->authorizeOrder($order);
+
+        if ($order->status === Order::STATUS_WAITING_SHIPPING) {
+            return redirect()
+                ->route('customer.orders.show', $order)
+                ->with('error', 'Pesanan masih menunggu admin menentukan ongkos kirim.');
+        }
 
         abort_if(
             ! in_array($order->status, [
@@ -32,6 +38,12 @@ class PaymentController extends Controller
     public function store(Request $request, Order $order): RedirectResponse
     {
         $this->authorizeOrder($order);
+
+        if ($order->status === Order::STATUS_WAITING_SHIPPING) {
+            return redirect()
+                ->route('customer.orders.show', $order)
+                ->with('error', 'Pesanan masih menunggu admin menentukan ongkos kirim.');
+        }
 
         abort_if(
             ! in_array($order->status, [

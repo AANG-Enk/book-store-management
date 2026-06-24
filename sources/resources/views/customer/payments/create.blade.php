@@ -85,6 +85,9 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-text">
+                                Nominal sebaiknya sama dengan total pembayaran: {{ $order->formatted_total_price }}.
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -124,6 +127,18 @@
                         <span class="text-secondary">Invoice</span>
                         <span class="fw-semibold">{{ $order->invoice_number }}</span>
                     </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Subtotal Buku</span>
+                        <span class="fw-semibold">{{ $order->formatted_subtotal_price }}</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Ongkos Kirim</span>
+                        <span class="fw-semibold">{{ $order->formatted_shipping_cost }}</span>
+                    </div>
+
+                    <hr>
 
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-secondary">Total Pembayaran</span>

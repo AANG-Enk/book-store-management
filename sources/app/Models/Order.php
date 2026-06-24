@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Order extends Model
 {
     public const STATUS_PENDING = 'pending';
+    public const STATUS_WAITING_SHIPPING = 'waiting_shipping';
     public const STATUS_WAITING_PAYMENT = 'waiting_payment';
     public const STATUS_PAID = 'paid';
     public const STATUS_PROCESSING = 'processing';
@@ -23,6 +24,16 @@ class Order extends Model
         'customer_email',
         'customer_phone',
         'shipping_address',
+        'shipping_province',
+        'shipping_city',
+        'shipping_postal_code',
+        'subtotal_price',
+        'shipping_courier',
+        'shipping_service',
+        'shipping_cost',
+        'tracking_number',
+        'shipping_confirmed_at',
+        'shipped_at',
         'total_price',
         'status',
         'notes',
@@ -31,7 +42,11 @@ class Order extends Model
     protected function casts(): array
     {
         return [
+            'subtotal_price' => 'decimal:2',
+            'shipping_cost' => 'decimal:2',
             'total_price' => 'decimal:2',
+            'shipping_confirmed_at' => 'datetime',
+            'shipped_at' => 'datetime',
         ];
     }
 
@@ -45,15 +60,53 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    public function getFormattedSubtotalPriceAttribute(): string
+    {
+        return 'Rp ' . number_format((float) $this->subtotal_price, 0, ',', '.');
+    }
+
+    public function getFormattedShippingCostAttribute(): string
+    {
+        return 'Rp ' . number_format((float) $this->shipping_cost, 0, ',', '.');
+    }
+
     public function getFormattedTotalPriceAttribute(): string
     {
         return 'Rp ' . number_format((float) $this->total_price, 0, ',', '.');
+    }
+
+    public function getShippingAreaAttribute(): string
+    {
+        return collect([
+            $this->shipping_city,
+            $this->shipping_province,
+            $this->shipping_postal_code,
+        ])->filter()->implode(', ') ?: '-';
+    }
+
+    public function getShippingCourierLabelAttribute(): string
+    {
+        return collect([
+            $this->shipping_courier,
+            $this->shipping_service,
+        ])->filter()->implode(' - ') ?: '-';
+    }
+
+    public function getIsShippingConfirmedAttribute(): bool
+    {
+        return $this->shipping_confirmed_at !== null;
     }
 
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
             self::STATUS_PENDING => 'Menunggu Checkout',
+            self::STATUS_WAITING_SHIPPING => 'Menunggu Ongkir',
             self::STATUS_WAITING_PAYMENT => 'Menunggu Pembayaran',
             self::STATUS_PAID => 'Sudah Dibayar',
             self::STATUS_PROCESSING => 'Diproses',
@@ -67,6 +120,7 @@ class Order extends Model
     {
         return match ($this->status) {
             self::STATUS_PENDING => 'text-bg-warning',
+            self::STATUS_WAITING_SHIPPING => 'text-bg-warning',
             self::STATUS_WAITING_PAYMENT => 'text-bg-info',
             self::STATUS_PAID => 'text-bg-primary',
             self::STATUS_PROCESSING => 'text-bg-secondary',
@@ -74,10 +128,5 @@ class Order extends Model
             self::STATUS_CANCELLED => 'text-bg-danger',
             default => 'text-bg-secondary',
         };
-    }
-
-    public function payment(): HasOne
-    {
-        return $this->hasOne(Payment::class);
     }
 }

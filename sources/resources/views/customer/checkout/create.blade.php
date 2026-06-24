@@ -6,7 +6,7 @@
     <div class="mb-4">
         <h1 class="h3 fw-bold mb-1">Checkout</h1>
         <p class="text-secondary mb-0">
-            Lengkapi data pengiriman untuk membuat pesanan.
+            Lengkapi data pengiriman. Ongkos kirim akan ditentukan manual oleh admin.
         </p>
     </div>
 
@@ -21,7 +21,7 @@
 
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="customer_name" class="form-label">Nama Lengkap</label>
+                                <label for="customer_name" class="form-label">Nama Penerima</label>
                                 <input
                                     id="customer_name"
                                     type="text"
@@ -70,9 +70,70 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card content-card mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold mb-3">Alamat Pengiriman</h2>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="shipping_province" class="form-label">Provinsi</label>
+                                <input
+                                    id="shipping_province"
+                                    type="text"
+                                    name="shipping_province"
+                                    class="form-control @error('shipping_province') is-invalid @enderror"
+                                    value="{{ old('shipping_province') }}"
+                                    required
+                                    maxlength="100"
+                                    placeholder="Contoh: Jawa Barat"
+                                >
+
+                                @error('shipping_province')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="shipping_city" class="form-label">Kota / Kabupaten</label>
+                                <input
+                                    id="shipping_city"
+                                    type="text"
+                                    name="shipping_city"
+                                    class="form-control @error('shipping_city') is-invalid @enderror"
+                                    value="{{ old('shipping_city') }}"
+                                    required
+                                    maxlength="100"
+                                    placeholder="Contoh: Bandung"
+                                >
+
+                                @error('shipping_city')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="shipping_postal_code" class="form-label">Kode Pos</label>
+                                <input
+                                    id="shipping_postal_code"
+                                    type="text"
+                                    name="shipping_postal_code"
+                                    class="form-control @error('shipping_postal_code') is-invalid @enderror"
+                                    value="{{ old('shipping_postal_code') }}"
+                                    maxlength="20"
+                                    placeholder="Opsional"
+                                >
+
+                                @error('shipping_postal_code')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
                             <div class="col-12">
-                                <label for="shipping_address" class="form-label">Alamat Pengiriman</label>
+                                <label for="shipping_address" class="form-label">Alamat Lengkap</label>
                                 <textarea
                                     id="shipping_address"
                                     name="shipping_address"
@@ -80,7 +141,7 @@
                                     class="form-control @error('shipping_address') is-invalid @enderror"
                                     required
                                     maxlength="1000"
-                                    placeholder="Tulis alamat lengkap pengiriman"
+                                    placeholder="Nama jalan, nomor rumah, RT/RW, kecamatan, patokan, dan detail lain"
                                 >{{ old('shipping_address') }}</textarea>
 
                                 @error('shipping_address')
@@ -89,14 +150,14 @@
                             </div>
 
                             <div class="col-12">
-                                <label for="notes" class="form-label">Catatan</label>
+                                <label for="notes" class="form-label">Catatan Pengiriman</label>
                                 <textarea
                                     id="notes"
                                     name="notes"
                                     rows="3"
                                     class="form-control @error('notes') is-invalid @enderror"
                                     maxlength="1000"
-                                    placeholder="Opsional"
+                                    placeholder="Opsional, contoh: kirim setelah jam kerja"
                                 >{{ old('notes') }}</textarea>
 
                                 @error('notes')
@@ -165,11 +226,19 @@
 
                         <hr>
 
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <span class="fw-semibold">Total Harga</span>
-                            <span class="h5 fw-bold text-primary mb-0">
-                                Rp {{ number_format($cartTotal, 0, ',', '.') }}
-                            </span>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-secondary">Subtotal Buku</span>
+                            <span class="fw-semibold">Rp {{ number_format($cartTotal, 0, ',', '.') }}</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-secondary">Ongkos Kirim</span>
+                            <span class="fw-semibold text-warning">Ditentukan admin</span>
+                        </div>
+
+                        <div class="alert alert-info small">
+                            Setelah pesanan dibuat, admin akan menentukan kurir dan ongkos kirim secara manual.
+                            Customer dapat upload bukti pembayaran setelah ongkir dikonfirmasi.
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">
