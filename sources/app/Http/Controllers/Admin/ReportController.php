@@ -32,6 +32,22 @@ class ReportController extends Controller
             ])
             ->sum('total_price');
 
+        $totalSubtotalSales = Order::query()
+            ->whereIn('status', [
+                Order::STATUS_PAID,
+                Order::STATUS_PROCESSING,
+                Order::STATUS_COMPLETED,
+            ])
+            ->sum('subtotal_price');
+
+        $totalShippingCost = Order::query()
+            ->whereIn('status', [
+                Order::STATUS_PAID,
+                Order::STATUS_PROCESSING,
+                Order::STATUS_COMPLETED,
+            ])
+            ->sum('shipping_cost');
+
         $totalOrders = Order::query()->count();
 
         $pendingPayments = Payment::query()
@@ -48,6 +64,8 @@ class ReportController extends Controller
 
         return view('admin.reports.index', compact(
             'totalSales',
+            'totalSubtotalSales',
+            'totalShippingCost',
             'totalOrders',
             'pendingPayments',
             'lowStockBooks',
@@ -88,6 +106,8 @@ class ReportController extends Controller
             });
 
         $totalOrders = (clone $summaryQuery)->count();
+        $totalSubtotalSales = (clone $summaryQuery)->sum('subtotal_price');
+        $totalShippingCost = (clone $summaryQuery)->sum('shipping_cost');
         $totalSales = (clone $summaryQuery)->sum('total_price');
 
         $statuses = $this->orderStatuses();
@@ -99,6 +119,8 @@ class ReportController extends Controller
             'status',
             'statuses',
             'totalOrders',
+            'totalSubtotalSales',
+            'totalShippingCost',
             'totalSales'
         ));
     }
@@ -301,6 +323,8 @@ class ReportController extends Controller
             ->get();
 
         $totalOrders = $orders->count();
+        $totalSubtotalSales = $orders->sum('subtotal_price');
+        $totalShippingCost = $orders->sum('shipping_cost');
         $totalSales = $orders->sum('total_price');
 
         $pdf = Pdf::loadView('admin.reports.pdf.sales', compact(
@@ -309,6 +333,8 @@ class ReportController extends Controller
             'endDate',
             'status',
             'totalOrders',
+            'totalSubtotalSales',
+            'totalShippingCost',
             'totalSales'
         ))->setPaper('a4', 'landscape');
 
@@ -425,6 +451,7 @@ class ReportController extends Controller
     private function orderStatuses(): array
     {
         return [
+            Order::STATUS_WAITING_SHIPPING => 'Menunggu Ongkir',
             Order::STATUS_WAITING_PAYMENT => 'Menunggu Pembayaran',
             Order::STATUS_PAID => 'Sudah Dibayar',
             Order::STATUS_PROCESSING => 'Diproses',

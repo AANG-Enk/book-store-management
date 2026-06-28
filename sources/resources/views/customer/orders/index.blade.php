@@ -7,7 +7,7 @@
         <div>
             <h1 class="h3 fw-bold mb-1">Riwayat Pesanan</h1>
             <p class="text-secondary mb-0">
-                Lihat daftar pesanan yang pernah kamu buat.
+                Lihat status pesanan, ongkir, pembayaran, dan resi pengiriman.
             </p>
         </div>
 
@@ -40,8 +40,8 @@
                         <thead>
                             <tr>
                                 <th>Invoice</th>
-                                <th>Tanggal</th>
-                                <th>Total</th>
+                                <th>Pengiriman</th>
+                                <th>Biaya</th>
                                 <th>Status</th>
                                 <th class="text-end">Aksi</th>
                             </tr>
@@ -52,19 +52,50 @@
                                     <td>
                                         <div class="fw-semibold">{{ $order->invoice_number }}</div>
                                         <div class="small text-secondary">
-                                            {{ $order->customer_name }}
+                                            {{ $order->created_at->format('d M Y H:i') }}
                                         </div>
                                     </td>
                                     <td>
-                                        {{ $order->created_at->format('d M Y H:i') }}
+                                        <div class="fw-semibold small">
+                                            {{ $order->shipping_courier_label }}
+                                        </div>
+                                        <div class="small text-secondary">
+                                            {{ $order->shipping_area }}
+                                        </div>
+
+                                        @if ($order->tracking_number)
+                                            <div class="small mt-1">
+                                                <span class="badge text-bg-light border">
+                                                    Resi: {{ $order->tracking_number }}
+                                                </span>
+                                            </div>
+                                        @elseif (! $order->is_shipping_confirmed)
+                                            <div class="small mt-1 text-warning fw-semibold">
+                                                Menunggu ongkir dari admin
+                                            </div>
+                                        @endif
                                     </td>
-                                    <td class="fw-semibold">
-                                        {{ $order->formatted_total_price }}
+                                    <td>
+                                        <div class="small text-secondary">
+                                            Subtotal: {{ $order->formatted_subtotal_price }}
+                                        </div>
+                                        <div class="small text-secondary">
+                                            Ongkir: {{ $order->formatted_shipping_cost }}
+                                        </div>
+                                        <div class="fw-semibold">
+                                            Total: {{ $order->formatted_total_price }}
+                                        </div>
                                     </td>
                                     <td>
                                         <span class="badge {{ $order->status_badge_class }}">
                                             {{ $order->status_label }}
                                         </span>
+
+                                        @if ($order->payment)
+                                            <div class="small text-secondary mt-1">
+                                                Bayar: {{ $order->payment->status_label }}
+                                            </div>
+                                        @endif
                                     </td>
                                     <td class="text-end">
                                         <a

@@ -58,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
             Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
             Route::patch('/orders/{order}/shipping', [AdminOrderController::class, 'updateShipping'])->name('orders.update-shipping');
+            Route::patch('/orders/{order}/mark-processing', [AdminOrderController::class, 'markProcessing'])->name('orders.mark-processing');
+            Route::patch('/orders/{order}/mark-shipped', [AdminOrderController::class, 'markShipped'])->name('orders.mark-shipped');
+            Route::patch('/orders/{order}/mark-completed', [AdminOrderController::class, 'markCompleted'])->name('orders.mark-completed');
 
             Route::resource('suppliers', SupplierController::class);
 

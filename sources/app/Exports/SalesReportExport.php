@@ -43,7 +43,12 @@ class SalesReportExport implements FromCollection, WithHeadings, WithMapping, Sh
             'Nama Customer',
             'Email Customer',
             'Total Item',
-            'Total Harga',
+            'Kurir',
+            'Layanan',
+            'Resi',
+            'Subtotal Produk',
+            'Ongkir',
+            'Grand Total',
             'Status',
         ];
     }
@@ -56,6 +61,11 @@ class SalesReportExport implements FromCollection, WithHeadings, WithMapping, Sh
             $order->customer_name,
             $order->customer_email,
             $order->items->sum('quantity'),
+            $order->shipping_courier ?: '-',
+            $order->shipping_service ?: '-',
+            $order->tracking_number ?: '-',
+            (float) $order->subtotal_price,
+            (float) $order->shipping_cost,
             (float) $order->total_price,
             $order->status_label,
         ];

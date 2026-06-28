@@ -8,24 +8,17 @@
         <div>
             <h1 class="h3 fw-bold mb-1">Laporan Penjualan</h1>
             <p class="text-secondary mb-0">
-                Data pesanan dan total penjualan berdasarkan filter.
+                Data pesanan, subtotal produk, ongkir manual, dan total akhir berdasarkan filter.
             </p>
         </div>
 
-        <div class="d-flex gap-2">
-            <a
-                href="{{ route('admin.reports.sales.export', request()->query()) }}"
-                class="btn btn-success"
-            >
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ route('admin.reports.sales.export', request()->query()) }}" class="btn btn-success">
                 <i class="bi bi-file-earmark-excel me-1"></i>
                 Export Excel
             </a>
 
-            <a
-                href="{{ route('admin.reports.sales.pdf', request()->query()) }}"
-                class="btn btn-danger"
-                target="_blank"
-            >
+            <a href="{{ route('admin.reports.sales.pdf', request()->query()) }}" class="btn btn-danger" target="_blank">
                 <i class="bi bi-file-earmark-pdf me-1"></i>
                 Export PDF
             </a>
@@ -36,34 +29,22 @@
             </button>
 
             <a href="{{ route('admin.reports.index') }}" class="btn btn-outline-secondary">
-                Kembali ke Laporan
+                Kembali
             </a>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card content-card mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('admin.reports.sales') }}" class="row g-3 align-items-end">
                 <div class="col-md-3">
                     <label for="start_date" class="form-label">Tanggal Mulai</label>
-                    <input
-                        id="start_date"
-                        type="date"
-                        name="start_date"
-                        class="form-control"
-                        value="{{ $startDate }}"
-                    >
+                    <input id="start_date" type="date" name="start_date" class="form-control" value="{{ $startDate }}">
                 </div>
 
                 <div class="col-md-3">
                     <label for="end_date" class="form-label">Tanggal Akhir</label>
-                    <input
-                        id="end_date"
-                        type="date"
-                        name="end_date"
-                        class="form-control"
-                        value="{{ $endDate }}"
-                    >
+                    <input id="end_date" type="date" name="end_date" class="form-control" value="{{ $endDate }}">
                 </div>
 
                 <div class="col-md-3">
@@ -84,7 +65,6 @@
                             <i class="bi bi-search me-1"></i>
                             Filter
                         </button>
-
                         <a href="{{ route('admin.reports.sales') }}" class="btn btn-outline-secondary">
                             Reset
                         </a>
@@ -95,38 +75,49 @@
     </div>
 
     <div class="row g-4 mb-4">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm">
+        <div class="col-md-3">
+            <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Total Order</p>
-                    <h2 class="h4 fw-bold mb-0">{{ $totalOrders }}</h2>
+                    <h2 class="h5 fw-bold mb-0">{{ $totalOrders }}</h2>
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm">
+        <div class="col-md-3">
+            <div class="card content-card h-100">
                 <div class="card-body">
-                    <p class="text-secondary mb-1">Total Penjualan</p>
-                    <h2 class="h4 fw-bold mb-0">
-                        Rp {{ number_format($totalSales, 0, ',', '.') }}
-                    </h2>
+                    <p class="text-secondary mb-1">Subtotal Produk</p>
+                    <h2 class="h5 fw-bold mb-0">Rp {{ number_format($totalSubtotalSales ?? 0, 0, ',', '.') }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card content-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Total Ongkir</p>
+                    <h2 class="h5 fw-bold mb-0">Rp {{ number_format($totalShippingCost ?? 0, 0, ',', '.') }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card content-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Grand Total</p>
+                    <h2 class="h5 fw-bold mb-0">Rp {{ number_format($totalSales, 0, ',', '.') }}</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card content-card">
         <div class="card-body">
             @if ($orders->isEmpty())
                 <div class="text-center py-5">
-                    <div class="display-5 text-secondary mb-3">
-                        <i class="bi bi-graph-up"></i>
+                    <div class="empty-state-icon mb-3 mx-auto">
+                        <i class="bi bi-receipt"></i>
                     </div>
-                    <h2 class="h5 fw-bold">Data penjualan tidak ditemukan</h2>
-                    <p class="text-secondary mb-0">
-                        Coba ubah filter tanggal atau status order.
-                    </p>
+                    <h2 class="h5 fw-bold">Data laporan kosong</h2>
+                    <p class="text-secondary mb-0">Belum ada pesanan sesuai filter yang dipilih.</p>
                 </div>
             @else
                 <div class="table-responsive">
@@ -136,10 +127,13 @@
                                 <th>Invoice</th>
                                 <th>Tanggal</th>
                                 <th>Customer</th>
-                                <th>Item</th>
-                                <th>Total</th>
+                                <th class="text-center">Item</th>
+                                <th>Pengiriman</th>
+                                <th class="text-end">Subtotal</th>
+                                <th class="text-end">Ongkir</th>
+                                <th class="text-end">Total</th>
                                 <th>Status</th>
-                                <th class="text-end">Detail</th>
+                                <th class="text-end">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -151,18 +145,21 @@
                                         <div>{{ $order->customer_name }}</div>
                                         <div class="small text-secondary">{{ $order->customer_email }}</div>
                                     </td>
-                                    <td>{{ $order->items->sum('quantity') }}</td>
-                                    <td class="fw-semibold">{{ $order->formatted_total_price }}</td>
+                                    <td class="text-center">{{ $order->items->sum('quantity') }}</td>
+                                    <td>
+                                        <div class="small fw-semibold">{{ $order->shipping_courier_label }}</div>
+                                        <div class="small text-secondary">{{ $order->tracking_number ? 'Resi: '.$order->tracking_number : $order->shipping_area }}</div>
+                                    </td>
+                                    <td class="text-end">{{ $order->formatted_subtotal_price }}</td>
+                                    <td class="text-end">{{ $order->formatted_shipping_cost }}</td>
+                                    <td class="text-end fw-semibold">{{ $order->formatted_total_price }}</td>
                                     <td>
                                         <span class="badge {{ $order->status_badge_class }}">
                                             {{ $order->status_label }}
                                         </span>
                                     </td>
                                     <td class="text-end">
-                                        <a
-                                            href="{{ route('admin.orders.show', $order) }}"
-                                            class="btn btn-outline-primary btn-sm"
-                                        >
+                                        <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-outline-primary btn-sm">
                                             Detail
                                         </a>
                                     </td>

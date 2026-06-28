@@ -23,6 +23,13 @@
                 Admin akan menentukan kurir dan ongkir secara manual. Tombol upload pembayaran akan aktif setelah ongkir dikonfirmasi.
             </div>
         </div>
+    @elseif ($order->status === \App\Models\Order::STATUS_SHIPPED)
+        <div class="alert alert-success">
+            <div class="fw-semibold mb-1">Pesanan sedang dikirim.</div>
+            <div class="small">
+                Kurir: {{ $order->shipping_courier_label }} · Resi: {{ $order->tracking_number ?: '-' }}
+            </div>
+        </div>
     @endif
 
     <div class="row g-4">
@@ -47,16 +54,12 @@
                                         <td>
                                             <div class="fw-semibold">{{ $item->book_title }}</div>
                                             @if ($item->book)
-                                                <div class="small text-secondary">
-                                                    {{ $item->book->category?->name ?? '-' }}
-                                                </div>
+                                                <div class="small text-secondary">{{ $item->book->category?->name ?? '-' }}</div>
                                             @endif
                                         </td>
                                         <td>{{ $item->formatted_book_price }}</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td class="text-end fw-semibold">
-                                            {{ $item->formatted_subtotal }}
-                                        </td>
+                                        <td class="text-end fw-semibold">{{ $item->formatted_subtotal }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -77,12 +80,32 @@
                                 </tr>
                                 <tr>
                                     <th colspan="3" class="text-end">Total</th>
-                                    <th class="text-end text-primary">
-                                        {{ $order->formatted_total_price }}
-                                    </th>
+                                    <th class="text-end text-primary">{{ $order->formatted_total_price }}</th>
                                 </tr>
                             </tfoot>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card content-card mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-3">Timeline Pesanan</h2>
+
+                    <div class="vstack gap-3">
+                        @foreach ($order->shipment_timeline as $timeline)
+                            <div class="d-flex gap-3">
+                                <div>
+                                    <span class="badge rounded-pill {{ $timeline['active'] ? 'text-bg-success' : 'text-bg-light border text-secondary' }}">
+                                        {{ $loop->iteration }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">{{ $timeline['label'] }}</div>
+                                    <div class="small text-secondary">{{ $timeline['description'] }}</div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -122,7 +145,13 @@
                         <dd class="col-sm-8">{{ $order->shipping_courier_label }}</dd>
 
                         <dt class="col-sm-4">Nomor Resi</dt>
-                        <dd class="col-sm-8">{{ $order->tracking_number ?: '-' }}</dd>
+                        <dd class="col-sm-8">
+                            @if ($order->tracking_number)
+                                <span class="fw-semibold">{{ $order->tracking_number }}</span>
+                            @else
+                                -
+                            @endif
+                        </dd>
 
                         <dt class="col-sm-4">Tanggal Dikirim</dt>
                         <dd class="col-sm-8">{{ $order->shipped_at?->format('d M Y H:i') ?? '-' }}</dd>
@@ -137,15 +166,11 @@
                     <h2 class="h5 fw-bold mb-3">Status Pesanan</h2>
 
                     <div class="mb-3">
-                        <span class="badge {{ $order->status_badge_class }}">
-                            {{ $order->status_label }}
-                        </span>
+                        <span class="badge {{ $order->status_badge_class }}">{{ $order->status_label }}</span>
                     </div>
 
                     <div class="small text-secondary mb-2">Tanggal Pesanan</div>
-                    <div class="fw-semibold mb-3">
-                        {{ $order->created_at->format('d M Y H:i') }}
-                    </div>
+                    <div class="fw-semibold mb-3">{{ $order->created_at->format('d M Y H:i') }}</div>
 
                     <div class="small text-secondary mb-2">Subtotal Buku</div>
                     <div class="fw-semibold mb-3">{{ $order->formatted_subtotal_price }}</div>
@@ -160,9 +185,7 @@
                     </div>
 
                     <div class="small text-secondary mb-2">Total Pembayaran</div>
-                    <div class="h5 fw-bold text-primary mb-0">
-                        {{ $order->formatted_total_price }}
-                    </div>
+                    <div class="h5 fw-bold text-primary mb-0">{{ $order->formatted_total_price }}</div>
                 </div>
             </div>
 
@@ -172,18 +195,14 @@
                         <h2 class="h5 fw-bold mb-3">Pembayaran</h2>
 
                         <div class="mb-3">
-                            <span class="badge {{ $order->payment->status_badge_class }}">
-                                {{ $order->payment->status_label }}
-                            </span>
+                            <span class="badge {{ $order->payment->status_badge_class }}">{{ $order->payment->status_label }}</span>
                         </div>
 
                         <div class="small text-secondary mb-1">Nama Pengirim</div>
                         <div class="fw-semibold mb-3">{{ $order->payment->sender_name }}</div>
 
                         <div class="small text-secondary mb-1">Nominal Transfer</div>
-                        <div class="fw-semibold text-primary mb-3">
-                            {{ $order->payment->formatted_transfer_amount }}
-                        </div>
+                        <div class="fw-semibold text-primary mb-3">{{ $order->payment->formatted_transfer_amount }}</div>
 
                         @if ($order->payment->status === \App\Models\Payment::STATUS_REJECTED)
                             <div class="alert alert-danger">
@@ -208,16 +227,12 @@
             @elseif ($order->status === \App\Models\Order::STATUS_WAITING_SHIPPING)
                 <div class="alert alert-warning">
                     <div class="fw-semibold mb-1">Belum bisa upload pembayaran</div>
-                    <div class="small">
-                        Admin perlu menentukan ongkos kirim terlebih dahulu.
-                    </div>
+                    <div class="small">Admin perlu menentukan ongkos kirim terlebih dahulu.</div>
                 </div>
             @else
                 <div class="alert alert-info">
                     <div class="fw-semibold mb-1">Pembayaran Manual</div>
-                    <div class="small mb-3">
-                        Silakan upload bukti transfer sesuai total pembayaran.
-                    </div>
+                    <div class="small mb-3">Silakan upload bukti transfer sesuai total pembayaran.</div>
 
                     <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">
                         Upload Bukti Pembayaran

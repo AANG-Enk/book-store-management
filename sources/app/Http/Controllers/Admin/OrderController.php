@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Payment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -24,7 +25,9 @@ class OrderController extends Controller
                         ->where('invoice_number', 'like', "%{$search}%")
                         ->orWhere('customer_name', 'like', "%{$search}%")
                         ->orWhere('customer_email', 'like', "%{$search}%")
-                        ->orWhere('customer_phone', 'like', "%{$search}%");
+                        ->orWhere('customer_phone', 'like', "%{$search}%")
+                        ->orWhere('tracking_number', 'like', "%{$search}%")
+                        ->orWhere('shipping_courier', 'like', "%{$search}%");
                 });
             })
             ->when($status !== '', function ($query) use ($status) {
@@ -58,16 +61,31 @@ class OrderController extends Controller
             ],
         ]);
 
-        if (
-            $validated['status'] === Order::STATUS_PAID
-            && $order->payment?->status !== \App\Models\Payment::STATUS_VERIFIED
-        ) {
-            return back()->with('error', 'Order tidak bisa diubah menjadi paid sebelum pembayaran diverifikasi.');
+        $nextStatus = $validated['status'];
+
+        if ($nextStatus === Order::STATUS_PAID && $order->payment?->status !== Payment::STATUS_VERIFIED) {
+            return back()->with('error', 'Order tidak bisa diubah menjadi sudah dibayar sebelum pembayaran diverifikasi.');
         }
 
-        $order->update([
-            'status' => $validated['status'],
-        ]);
+        if ($nextStatus === Order::STATUS_PROCESSING && $order->payment?->status !== Payment::STATUS_VERIFIED) {
+            return back()->with('error', 'Order tidak bisa diproses sebelum pembayaran diverifikasi.');
+        }
+
+        if ($nextStatus === Order::STATUS_SHIPPED && blank($order->tracking_number)) {
+            return back()->with('error', 'Nomor resi wajib diisi sebelum pesanan ditandai dikirim.');
+        }
+
+        if ($nextStatus === Order::STATUS_COMPLETED && ! in_array($order->status, [Order::STATUS_SHIPPED, Order::STATUS_PROCESSING, Order::STATUS_PAID], true)) {
+            return back()->with('error', 'Order hanya bisa diselesaikan setelah dibayar/diproses/dikirim.');
+        }
+
+        $payload = ['status' => $nextStatus];
+
+        if ($nextStatus === Order::STATUS_SHIPPED && blank($order->shipped_at)) {
+            $payload['shipped_at'] = now();
+        }
+
+        $order->update($payload);
 
         return redirect()
             ->route('admin.orders.show', $order)
@@ -82,7 +100,16 @@ class OrderController extends Controller
             'shipping_cost' => ['required', 'numeric', 'min:0', 'max:999999999'],
             'tracking_number' => ['nullable', 'string', 'max:100'],
             'shipped_at' => ['nullable', 'date'],
+            'mark_shipped' => ['nullable', 'boolean'],
         ]);
+
+        if ($request->boolean('mark_shipped') && blank($validated['tracking_number'] ?? $order->tracking_number)) {
+            return back()->withInput()->with('error', 'Nomor resi wajib diisi jika ingin langsung menandai pesanan dikirim.');
+        }
+
+        if ($request->boolean('mark_shipped') && $order->payment?->status !== Payment::STATUS_VERIFIED) {
+            return back()->withInput()->with('error', 'Pesanan belum bisa ditandai dikirim sebelum pembayaran diverifikasi.');
+        }
 
         $subtotalPrice = (float) $order->subtotal_price;
 
@@ -95,6 +122,10 @@ class OrderController extends Controller
             ? Order::STATUS_WAITING_PAYMENT
             : $order->status;
 
+        if ($request->boolean('mark_shipped')) {
+            $nextStatus = Order::STATUS_SHIPPED;
+        }
+
         $order->update([
             'subtotal_price' => $subtotalPrice,
             'shipping_courier' => $validated['shipping_courier'] ?? null,
@@ -102,14 +133,68 @@ class OrderController extends Controller
             'shipping_cost' => $shippingCost,
             'tracking_number' => $validated['tracking_number'] ?? null,
             'shipping_confirmed_at' => $order->shipping_confirmed_at ?? now(),
-            'shipped_at' => $validated['shipped_at'] ?? null,
+            'shipped_at' => $request->boolean('mark_shipped')
+                ? ($validated['shipped_at'] ?? now())
+                : ($validated['shipped_at'] ?? null),
             'total_price' => $subtotalPrice + $shippingCost,
             'status' => $nextStatus,
         ]);
 
         return redirect()
             ->route('admin.orders.show', $order)
-            ->with('success', 'Informasi pengiriman dan ongkir berhasil diperbarui.');
+            ->with('success', $request->boolean('mark_shipped')
+                ? 'Informasi pengiriman disimpan dan pesanan ditandai dikirim.'
+                : 'Informasi pengiriman dan ongkir berhasil diperbarui.');
+    }
+
+    public function markProcessing(Order $order): RedirectResponse
+    {
+        if ($order->payment?->status !== Payment::STATUS_VERIFIED) {
+            return back()->with('error', 'Pesanan belum bisa diproses sebelum pembayaran diverifikasi.');
+        }
+
+        $order->update([
+            'status' => Order::STATUS_PROCESSING,
+        ]);
+
+        return back()->with('success', 'Pesanan berhasil ditandai sedang diproses.');
+    }
+
+    public function markShipped(Request $request, Order $order): RedirectResponse
+    {
+        if ($order->payment?->status !== Payment::STATUS_VERIFIED) {
+            return back()->with('error', 'Pesanan belum bisa dikirim sebelum pembayaran diverifikasi.');
+        }
+
+        $validated = $request->validate([
+            'shipping_courier' => ['nullable', 'string', 'max:100'],
+            'shipping_service' => ['nullable', 'string', 'max:100'],
+            'tracking_number' => ['required', 'string', 'max:100'],
+            'shipped_at' => ['nullable', 'date'],
+        ]);
+
+        $order->update([
+            'shipping_courier' => $validated['shipping_courier'] ?? $order->shipping_courier,
+            'shipping_service' => $validated['shipping_service'] ?? $order->shipping_service,
+            'tracking_number' => $validated['tracking_number'],
+            'shipped_at' => $validated['shipped_at'] ?? now(),
+            'status' => Order::STATUS_SHIPPED,
+        ]);
+
+        return back()->with('success', 'Pesanan berhasil ditandai dikirim.');
+    }
+
+    public function markCompleted(Order $order): RedirectResponse
+    {
+        if (! in_array($order->status, [Order::STATUS_SHIPPED, Order::STATUS_PROCESSING, Order::STATUS_PAID], true)) {
+            return back()->with('error', 'Pesanan belum bisa diselesaikan dari status saat ini.');
+        }
+
+        $order->update([
+            'status' => Order::STATUS_COMPLETED,
+        ]);
+
+        return back()->with('success', 'Pesanan berhasil ditandai selesai.');
     }
 
     private function statuses(): array
@@ -119,6 +204,7 @@ class OrderController extends Controller
             Order::STATUS_WAITING_PAYMENT => 'Menunggu Pembayaran',
             Order::STATUS_PAID => 'Sudah Dibayar',
             Order::STATUS_PROCESSING => 'Diproses',
+            Order::STATUS_SHIPPED => 'Dikirim',
             Order::STATUS_COMPLETED => 'Selesai',
             Order::STATUS_CANCELLED => 'Dibatalkan',
         ];

@@ -14,6 +14,7 @@ class Order extends Model
     public const STATUS_WAITING_PAYMENT = 'waiting_payment';
     public const STATUS_PAID = 'paid';
     public const STATUS_PROCESSING = 'processing';
+    public const STATUS_SHIPPED = 'shipped';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_CANCELLED = 'cancelled';
 
@@ -102,6 +103,38 @@ class Order extends Model
         return $this->shipping_confirmed_at !== null;
     }
 
+
+    public function getShipmentTimelineAttribute(): array
+    {
+        return [
+            [
+                'label' => 'Pesanan dibuat',
+                'description' => $this->created_at?->format('d M Y H:i'),
+                'active' => true,
+            ],
+            [
+                'label' => 'Ongkir dikonfirmasi',
+                'description' => $this->shipping_confirmed_at?->format('d M Y H:i') ?? 'Menunggu admin',
+                'active' => $this->shipping_confirmed_at !== null,
+            ],
+            [
+                'label' => 'Pembayaran diverifikasi',
+                'description' => $this->payment?->verified_at?->format('d M Y H:i') ?? 'Menunggu pembayaran/verifikasi',
+                'active' => $this->payment?->status === \App\Models\Payment::STATUS_VERIFIED,
+            ],
+            [
+                'label' => 'Pesanan dikirim',
+                'description' => $this->shipped_at?->format('d M Y H:i') ?? 'Belum dikirim',
+                'active' => $this->status === self::STATUS_SHIPPED || $this->status === self::STATUS_COMPLETED || $this->shipped_at !== null,
+            ],
+            [
+                'label' => 'Pesanan selesai',
+                'description' => $this->status === self::STATUS_COMPLETED ? 'Selesai' : 'Belum selesai',
+                'active' => $this->status === self::STATUS_COMPLETED,
+            ],
+        ];
+    }
+
     public function getStatusLabelAttribute(): string
     {
         return match ($this->status) {
@@ -110,6 +143,7 @@ class Order extends Model
             self::STATUS_WAITING_PAYMENT => 'Menunggu Pembayaran',
             self::STATUS_PAID => 'Sudah Dibayar',
             self::STATUS_PROCESSING => 'Diproses',
+            self::STATUS_SHIPPED => 'Dikirim',
             self::STATUS_COMPLETED => 'Selesai',
             self::STATUS_CANCELLED => 'Dibatalkan',
             default => ucfirst($this->status),
@@ -124,6 +158,7 @@ class Order extends Model
             self::STATUS_WAITING_PAYMENT => 'text-bg-info',
             self::STATUS_PAID => 'text-bg-primary',
             self::STATUS_PROCESSING => 'text-bg-secondary',
+            self::STATUS_SHIPPED => 'text-bg-dark',
             self::STATUS_COMPLETED => 'text-bg-success',
             self::STATUS_CANCELLED => 'text-bg-danger',
             default => 'text-bg-secondary',

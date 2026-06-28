@@ -19,12 +19,16 @@
                 <div class="value">{{ $totalOrders }}</div>
             </td>
             <td>
-                <div class="label">Total Penjualan</div>
-                <div class="value">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
+                <div class="label">Subtotal Produk</div>
+                <div class="value">Rp {{ number_format($totalSubtotalSales ?? 0, 0, ',', '.') }}</div>
             </td>
             <td>
-                <div class="label">Filter Status</div>
-                <div class="value">{{ $status ?: 'Semua' }}</div>
+                <div class="label">Total Ongkir</div>
+                <div class="value">Rp {{ number_format($totalShippingCost ?? 0, 0, ',', '.') }}</div>
+            </td>
+            <td>
+                <div class="label">Grand Total</div>
+                <div class="value">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
             </td>
         </tr>
     </table>
@@ -37,6 +41,9 @@
                 <th>Tanggal</th>
                 <th>Customer</th>
                 <th class="text-center">Item</th>
+                <th>Pengiriman</th>
+                <th class="text-right">Subtotal</th>
+                <th class="text-right">Ongkir</th>
                 <th class="text-right">Total</th>
                 <th>Status</th>
             </tr>
@@ -52,12 +59,18 @@
                         <span class="muted">{{ $order->customer_email }}</span>
                     </td>
                     <td class="text-center">{{ $order->items->sum('quantity') }}</td>
+                    <td>
+                        {{ $order->shipping_courier_label }}<br>
+                        <span class="muted">{{ $order->tracking_number ? 'Resi: '.$order->tracking_number : $order->shipping_area }}</span>
+                    </td>
+                    <td class="text-right">Rp {{ number_format((float) $order->subtotal_price, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format((float) $order->shipping_cost, 0, ',', '.') }}</td>
                     <td class="text-right">Rp {{ number_format((float) $order->total_price, 0, ',', '.') }}</td>
                     <td>{{ $order->status_label }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="text-center">Data tidak tersedia.</td>
+                    <td colspan="10" class="text-center">Data tidak tersedia.</td>
                 </tr>
             @endforelse
         </tbody>

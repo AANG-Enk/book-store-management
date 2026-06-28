@@ -7,7 +7,7 @@
     <div class="mb-4">
         <h1 class="h3 fw-bold mb-1">Laporan Admin</h1>
         <p class="text-secondary mb-0">
-            Ringkasan laporan penjualan, pembayaran, stok buku, dan customer.
+            Ringkasan laporan penjualan, pembayaran, stok buku, customer, dan ongkir manual.
         </p>
     </div>
 
@@ -16,9 +16,40 @@
             <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Total Penjualan</p>
-                    <h2 class="h5 fw-bold mb-0">
+                    <h2 class="h5 fw-bold mb-1">
                         Rp {{ number_format($totalSales, 0, ',', '.') }}
                     </h2>
+                    <div class="small text-secondary">
+                        Subtotal + ongkir terkonfirmasi.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card content-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Subtotal Produk</p>
+                    <h2 class="h5 fw-bold mb-1">
+                        Rp {{ number_format($totalSubtotalSales ?? 0, 0, ',', '.') }}
+                    </h2>
+                    <div class="small text-secondary">
+                        Nilai produk tanpa ongkir.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card content-card h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-1">Total Ongkir</p>
+                    <h2 class="h5 fw-bold mb-1">
+                        Rp {{ number_format($totalShippingCost ?? 0, 0, ',', '.') }}
+                    </h2>
+                    <div class="small text-secondary">
+                        Ongkir manual dari admin.
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,25 +58,10 @@
             <div class="card content-card h-100">
                 <div class="card-body">
                     <p class="text-secondary mb-1">Total Pesanan</p>
-                    <h2 class="h5 fw-bold mb-0">{{ $totalOrders }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card content-card h-100">
-                <div class="card-body">
-                    <p class="text-secondary mb-1">Pembayaran Pending</p>
-                    <h2 class="h5 fw-bold mb-0">{{ $pendingPayments }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card content-card h-100">
-                <div class="card-body">
-                    <p class="text-secondary mb-1">Customer</p>
-                    <h2 class="h5 fw-bold mb-0">{{ $totalCustomers }}</h2>
+                    <h2 class="h5 fw-bold mb-1">{{ $totalOrders }}</h2>
+                    <div class="small text-secondary">
+                        Pembayaran pending: {{ $pendingPayments }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -60,7 +76,7 @@
                     </div>
                     <h2 class="h5 fw-bold">Laporan Penjualan</h2>
                     <p class="text-secondary">
-                        Melihat daftar pesanan, total penjualan, dan status order.
+                        Melihat pesanan, subtotal produk, ongkir manual, total akhir, dan status order.
                     </p>
                     <div class="d-flex gap-2 flex-wrap">
                         <a href="{{ route('admin.reports.sales') }}" class="btn btn-primary btn-sm">
