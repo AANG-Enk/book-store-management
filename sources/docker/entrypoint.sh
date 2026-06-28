@@ -34,4 +34,8 @@ php artisan config:cache >/dev/null 2>&1 || true
 php artisan route:cache >/dev/null 2>&1 || true
 php artisan view:cache >/dev/null 2>&1 || true
 
+chmod -R a+rX storage/app/public || true
+find storage/app/public -type d -exec chmod 755 {} \; || true
+find storage/app/public -type f -exec chmod 644 {} \; || true
+
 exec "$@"
