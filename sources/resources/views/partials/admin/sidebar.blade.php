@@ -2,11 +2,11 @@
     <div class="admin-sidebar-brand p-3 border-bottom border-secondary">
         <a href="{{ route('admin.dashboard') }}" class="text-white fw-bold fs-5 d-flex align-items-center gap-2">
             <span class="brand-logo" aria-hidden="true">
-                <i class="bi bi-speedometer2"></i>
+                <img src="{{ asset('img/logo.png') }}" alt="Logo NusaCendana" title="Logo NusaCendana">
             </span>
             <span>Admin</span>
         </a>
-        <div class="small text-white-50 mt-2">BookStore Panel</div>
+        <div class="small text-white-50 mt-2">NusaCendana Panel</div>
     </div>
 
     <nav class="p-3">

@@ -1,7 +1,7 @@
 <header class="admin-topbar border-bottom sticky-top">
     <div class="container-fluid py-3 d-flex justify-content-between align-items-center">
         <div>
-            <div class="small text-secondary">BookStore Admin</div>
+            <div class="small text-secondary">NusaCendana Admin</div>
             <h1 class="h5 fw-bold mb-0">@yield('page_title', 'Dashboard')</h1>
         </div>
 

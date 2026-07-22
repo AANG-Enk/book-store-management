@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'BookStore - Toko Buku Online')</title>
+    <title>@yield('title', 'NusaCendana - Toko Buku Online')</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

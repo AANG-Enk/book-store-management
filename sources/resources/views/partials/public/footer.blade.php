@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-lg-5">
-                <h2 class="h4 fw-bold">BookStore</h2>
+                <h2 class="h4 fw-bold">NusaCendana</h2>
                 <p class="text-white-50 mb-0">
                     Website toko buku online berbasis Laravel untuk katalog buku,
                     keranjang belanja, checkout, pembayaran manual, dan laporan admin.
@@ -45,7 +45,7 @@
         <hr class="border-secondary my-4">
 
         <div class="d-flex flex-column flex-md-row justify-content-between gap-2 text-white-50 small">
-            <div>&copy; {{ now()->year }} BookStore. All rights reserved.</div>
+            <div>&copy; {{ now()->year }} NusaCendana. All rights reserved.</div>
             <div>Sistem Informasi Toko Buku Online.</div>
         </div>
     </div>

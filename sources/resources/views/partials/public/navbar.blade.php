@@ -1,10 +1,8 @@
 <nav class="navbar navbar-expand-lg public-navbar border-bottom sticky-top">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-            <span class="brand-logo" aria-hidden="true">
-                <i class="bi bi-book-half"></i>
-            </span>
-            <span>BookStore</span>
+            <img src="{{ asset('img/logo.png') }}" alt="Logo NusaCendana" title="Logo NusaCendana" width="75">
+            <span>NusaCendana</span>
         </a>
 
         <button
