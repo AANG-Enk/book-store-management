@@ -1,6 +1,6 @@
 @extends('layouts.public')
 
-@section('title', 'BookStore - Toko Buku Online')
+@section('title', 'NusaCendana - Toko Buku Online')
 
 @section('content')
     <section class="page-section bg-white">
@@ -12,8 +12,7 @@
                         Temukan Buku Favoritmu dengan Mudah
                     </h1>
                     <p class="lead text-secondary mb-4">
-                        BookStore menyediakan berbagai kategori buku untuk kebutuhan belajar,
-                        referensi, dan bacaan harian.
+                       Toko Buku Nusa Cendana adalah pusat buku Original kedokteran dan buku pelajaran bahasa Jerman (Netzwerk neu A1, A2, dan B1)
                     </p>
                     <div class="d-flex gap-2 flex-wrap">
                         @auth

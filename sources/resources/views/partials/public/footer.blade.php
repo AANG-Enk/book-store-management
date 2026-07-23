@@ -4,8 +4,7 @@
             <div class="col-lg-5">
                 <h2 class="h4 fw-bold">NusaCendana</h2>
                 <p class="text-white-50 mb-0">
-                    Website toko buku online berbasis Laravel untuk katalog buku,
-                    keranjang belanja, checkout, pembayaran manual, dan laporan admin.
+                    Toko Buku Nusa Cendana adalah pusat buku Original kedokteran dan buku pelajaran bahasa Jerman (Netzwerk neu A1, A2, dan B1)
                 </p>
             </div>
 
@@ -35,9 +34,9 @@
             <div class="col-lg-3">
                 <h3 class="h6 fw-bold">Kontak</h3>
                 <div class="text-white-50 small">
-                    <div>Email: info@bookstore.test</div>
-                    <div>Telepon: 0812-3456-7890</div>
-                    <div>Alamat: Jl. Pendidikan No. 10, Bandung</div>
+                    <div>Email: tbnusacendana@gmail.com <br> tbnusacendana@yahoo.com</div>
+                    <div>Telepon: (022) 4231544</div>
+                    <div>Alamat: Jl. Braga No.115, Braga, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40111</div>
                 </div>
             </div>
         </div>
