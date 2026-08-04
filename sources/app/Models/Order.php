@@ -48,6 +48,7 @@ class Order extends Model
             'total_price' => 'decimal:2',
             'shipping_confirmed_at' => 'datetime',
             'shipped_at' => 'datetime',
+            'user_id' => 'integer',
         ];
     }
 
