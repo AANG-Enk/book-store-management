@@ -15,6 +15,7 @@ use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\Customer\PaymentController as CustomerPaymentController;
+use App\Http\Controllers\Customer\ShippingController;
 
 use App\Http\Controllers\Public\BookCatalogController;
 use App\Http\Controllers\Public\PageController;
@@ -106,6 +107,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
             Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+            Route::get('/shipping/provinces', [ShippingController::class, 'provinces'])->name('shipping.provinces');
+            Route::get('/shipping/cities', [ShippingController::class, 'cities'])->name('shipping.cities');
+            Route::post('/shipping/calculate-cost', [ShippingController::class, 'calculateCost'])->name('shipping.calculate-cost');
 
             Route::get('/orders/{order}/payment', [CustomerPaymentController::class, 'create'])->name('payments.create');
             Route::post('/orders/{order}/payment', [CustomerPaymentController::class, 'store'])->name('payments.store');

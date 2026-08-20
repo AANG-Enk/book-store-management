@@ -197,6 +197,7 @@ class BookController extends Controller
             'description' => ['nullable', 'string', 'max:3000'],
             'stock' => ['required', 'integer', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
+            'weight' => ['required', 'integer', 'min:1'],
             'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'is_active' => ['nullable', 'boolean'],
             'supplier_id' => ['nullable', 'integer', 'exists:suppliers,id'],

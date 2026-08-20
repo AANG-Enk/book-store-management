@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'rajaongkir' => [
+        'api_key' => env('RAJAONGKIR_API_KEY'),
+        'package' => env('RAJAONGKIR_PACKAGE', 'starter'),
+        'base_url' => env('RAJAONGKIR_BASE_URL', 'https://api.rajaongkir.com/starter/'),
+        'origin_city_id' => (int) env('RAJAONGKIR_ORIGIN_CITY_ID', 213),
+        'origin_city_name' => env('RAJAONGKIR_ORIGIN_CITY_NAME', 'Kupang'),
+    ],
+
 ];

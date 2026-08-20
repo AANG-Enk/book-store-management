@@ -21,6 +21,7 @@ class Book extends Model
         'description',
         'stock',
         'price',
+        'weight',
         'cover_image',
         'is_active',
     ];
@@ -29,6 +30,7 @@ class Book extends Model
     {
         return [
             'price' => 'decimal:2',
+            'weight' => 'integer',
             'stock' => 'integer',
             'publication_year' => 'integer',
             'is_active' => 'boolean',
@@ -52,6 +54,17 @@ class Book extends Model
     public function getFormattedPriceAttribute(): string
     {
         return 'Rp ' . number_format((float) $this->price, 0, ',', '.');
+    }
+
+    public function getFormattedWeightAttribute(): string
+    {
+        $weight = (int) ($this->weight ?: 250);
+
+        if ($weight >= 1000) {
+            return rtrim(rtrim(number_format($weight / 1000, 2, ',', '.'), '0'), ',') . ' kg';
+        }
+
+        return $weight . ' gram';
     }
 
     public function cartItems(): HasMany

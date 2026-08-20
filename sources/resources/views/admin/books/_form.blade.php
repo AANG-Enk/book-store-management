@@ -154,7 +154,7 @@
         @enderror
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label for="price" class="form-label">Harga</label>
         <div class="input-group">
             <span class="input-group-text">Rp</span>
@@ -175,7 +175,32 @@
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
+        <label for="weight" class="form-label">Berat Buku (Gram)</label>
+        <div class="input-group">
+            <input
+                id="weight"
+                type="number"
+                name="weight"
+                class="form-control @error('weight') is-invalid @enderror"
+                value="{{ old('weight', $book->weight ?? 250) }}"
+                required
+                min="1"
+                step="1"
+                placeholder="250"
+            >
+            <span class="input-group-text">gram</span>
+
+            @error('weight')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-text">
+            Digunakan untuk kalkulasi otomatis ongkos kirim RajaOngkir.
+        </div>
+    </div>
+
+    <div class="col-md-4">
         <label for="cover_image" class="form-label">Cover Buku</label>
         <input
             id="cover_image"

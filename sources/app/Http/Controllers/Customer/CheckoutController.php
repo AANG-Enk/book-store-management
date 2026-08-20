@@ -24,8 +24,14 @@ class CheckoutController extends Controller
         }
 
         $cartTotal = $cartItems->sum(fn (CartItem $item) => $item->subtotal);
+        $totalWeight = $cartItems->sum(fn (CartItem $item) => $item->quantity * ($item->book->weight ?: 250));
+        $totalWeight = max(1, $totalWeight);
 
-        return view('customer.checkout.create', compact('cartItems', 'cartTotal'));
+        $formattedWeight = $totalWeight >= 1000
+            ? rtrim(rtrim(number_format($totalWeight / 1000, 2, ',', '.'), '0'), ',') . ' kg'
+            : $totalWeight . ' gram';
+
+        return view('customer.checkout.create', compact('cartItems', 'cartTotal', 'totalWeight', 'formattedWeight'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -33,11 +39,14 @@ class CheckoutController extends Controller
         $validated = $request->validate([
             'customer_name' => ['required', 'string', 'max:150'],
             'customer_email' => ['required', 'email', 'max:150'],
-            'customer_phone' => ['nullable', 'string', 'max:30'],
-            'shipping_address' => ['required', 'string', 'max:1000'],
+            'customer_phone' => ['required', 'string', 'max:30'],
             'shipping_province' => ['required', 'string', 'max:100'],
             'shipping_city' => ['required', 'string', 'max:100'],
             'shipping_postal_code' => ['nullable', 'string', 'max:20'],
+            'shipping_courier' => ['required', 'string', 'max:50'],
+            'shipping_service' => ['required', 'string', 'max:50'],
+            'shipping_cost' => ['required', 'numeric', 'min:0'],
+            'shipping_address' => ['required', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -65,7 +74,7 @@ class CheckoutController extends Controller
 
         $order = DB::transaction(function () use ($validated, $cartItems) {
             $subtotalPrice = $cartItems->sum(fn (CartItem $item) => $item->subtotal);
-            $shippingCost = 0;
+            $shippingCost = (float) $validated['shipping_cost'];
             $totalPrice = $subtotalPrice + $shippingCost;
 
             $order = Order::query()->create([
@@ -78,10 +87,13 @@ class CheckoutController extends Controller
                 'shipping_province' => $validated['shipping_province'],
                 'shipping_city' => $validated['shipping_city'],
                 'shipping_postal_code' => $validated['shipping_postal_code'] ?? null,
-                'subtotal_price' => $subtotalPrice,
+                'shipping_courier' => strtoupper($validated['shipping_courier']),
+                'shipping_service' => $validated['shipping_service'],
                 'shipping_cost' => $shippingCost,
+                'shipping_confirmed_at' => now(),
+                'subtotal_price' => $subtotalPrice,
                 'total_price' => $totalPrice,
-                'status' => Order::STATUS_WAITING_SHIPPING,
+                'status' => Order::STATUS_WAITING_PAYMENT,
                 'notes' => $validated['notes'] ?? null,
             ]);
 
@@ -117,7 +129,7 @@ class CheckoutController extends Controller
 
         return redirect()
             ->route('customer.orders.show', $order)
-            ->with('success', 'Checkout berhasil. Pesanan menunggu admin menentukan ongkos kirim.');
+            ->with('success', 'Pesanan berhasil dibuat dengan ongkos kirim otomatis. Silakan lanjutkan pembayaran.');
     }
 
     private function getCartItems()
