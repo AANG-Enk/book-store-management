@@ -159,11 +159,23 @@
                     window.snap.pay(snapToken, {
                         onSuccess: function (result) {
                             console.log('Payment success:', result);
-                            window.location.href = "{{ route('customer.payments.finish', $order) }}?status=success";
+                            const url = new URL("{{ route('customer.payments.finish', $order) }}");
+                            url.searchParams.set('status', 'success');
+                            if (result) {
+                                if (result.order_id) url.searchParams.set('order_id', result.order_id);
+                                if (result.status_code) url.searchParams.set('status_code', result.status_code);
+                                if (result.transaction_status) url.searchParams.set('transaction_status', result.transaction_status);
+                                if (result.transaction_id) url.searchParams.set('transaction_id', result.transaction_id);
+                                if (result.payment_type) url.searchParams.set('payment_type', result.payment_type);
+                            }
+                            window.location.href = url.toString();
                         },
                         onPending: function (result) {
                             console.log('Payment pending:', result);
-                            window.location.href = "{{ route('customer.payments.finish', $order) }}?status=pending";
+                            const url = new URL("{{ route('customer.payments.finish', $order) }}");
+                            url.searchParams.set('transaction_status', 'pending');
+                            if (result && result.transaction_id) url.searchParams.set('transaction_id', result.transaction_id);
+                            window.location.href = url.toString();
                         },
                         onError: function (result) {
                             console.error('Payment error:', result);

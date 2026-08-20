@@ -295,29 +295,34 @@
             </div>
 
             @if ($order->payment)
-                <div class="card content-card">
+                <div class="card content-card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <h2 class="h5 fw-bold mb-3">Pembayaran</h2>
+                        <h2 class="h5 fw-bold mb-3">Informasi Pembayaran</h2>
 
                         <div class="mb-3">
                             <span class="badge {{ $order->payment->status_badge_class }}">{{ $order->payment->status_label }}</span>
                         </div>
 
-                        <div class="small text-secondary mb-1">Nama Pengirim</div>
-                        <div class="fw-semibold mb-3">{{ $order->payment->sender_name }}</div>
+                        <div class="small text-secondary mb-1">Metode</div>
+                        <div class="fw-semibold mb-2">{{ $order->payment->payment_method_label }}</div>
 
-                        <div class="small text-secondary mb-1">Nominal Transfer</div>
-                        <div class="fw-semibold text-primary mb-3">{{ $order->payment->formatted_transfer_amount }}</div>
+                        @if ($order->payment->transaction_id)
+                            <div class="small text-secondary mb-1">ID Transaksi Midtrans</div>
+                            <div class="small font-monospace mb-2">{{ $order->payment->transaction_id }}</div>
+                        @endif
 
-                        <a href="{{ route('admin.payments.show', $order->payment) }}" class="btn btn-outline-primary w-100">
-                            Lihat Pembayaran
+                        <div class="small text-secondary mb-1">Nominal</div>
+                        <div class="fw-bold text-primary mb-3">{{ $order->payment->formatted_transfer_amount }}</div>
+
+                        <a href="{{ route('admin.payments.show', $order->payment) }}" class="btn btn-outline-primary btn-sm w-100">
+                            <i class="bi bi-receipt me-1"></i> Rincian Transaksi
                         </a>
                     </div>
                 </div>
             @else
-                <div class="alert alert-warning">
-                    <div class="fw-semibold mb-1">Belum ada pembayaran</div>
-                    <div class="small">Customer belum upload bukti transfer untuk pesanan ini.</div>
+                <div class="alert alert-warning border-0 shadow-sm">
+                    <div class="fw-semibold mb-1"><i class="bi bi-clock me-1"></i> Menunggu Pembayaran</div>
+                    <div class="small">Customer belum menyelesaikan pembayaran Midtrans untuk pesanan ini.</div>
                 </div>
             @endif
         </div>

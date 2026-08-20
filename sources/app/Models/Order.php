@@ -114,14 +114,14 @@ class Order extends Model
                 'active' => true,
             ],
             [
-                'label' => 'Ongkir dikonfirmasi',
-                'description' => $this->shipping_confirmed_at?->format('d M Y H:i') ?? 'Menunggu admin',
-                'active' => $this->shipping_confirmed_at !== null,
+                'label' => 'Ongkir dihitung otomatis',
+                'description' => $this->shipping_courier_label ?: 'RajaOngkir',
+                'active' => $this->shipping_confirmed_at !== null || (float) $this->shipping_cost > 0,
             ],
             [
-                'label' => 'Pembayaran diverifikasi',
-                'description' => $this->payment?->verified_at?->format('d M Y H:i') ?? 'Menunggu pembayaran/verifikasi',
-                'active' => $this->payment?->status === \App\Models\Payment::STATUS_VERIFIED,
+                'label' => 'Pembayaran berhasil (Midtrans)',
+                'description' => $this->payment?->verified_at?->format('d M Y H:i') ?? ($this->status === self::STATUS_PAID ? 'Lunas' : 'Menunggu pembayaran'),
+                'active' => $this->payment?->status === \App\Models\Payment::STATUS_VERIFIED || in_array($this->status, [self::STATUS_PAID, self::STATUS_PROCESSING, self::STATUS_SHIPPED, self::STATUS_COMPLETED], true),
             ],
             [
                 'label' => 'Pesanan dikirim',

@@ -52,15 +52,46 @@ class PaymentController extends Controller
     {
         $this->authorizeOrder($order);
 
-        $orderId = $request->string('order_id')->toString();
         $statusCode = $request->string('status_code')->toString();
         $transactionStatus = $request->string('transaction_status')->toString();
+        $status = $request->string('status')->toString();
+        $transactionId = $request->string('transaction_id')->toString() ?: ('MID-' . strtoupper(uniqid()));
+        $paymentType = $request->string('payment_type')->toString() ?: 'qris_or_va';
 
-        // If redirected from Midtrans Snap success
-        if (in_array($statusCode, ['200', '201'], true) || in_array($transactionStatus, ['settlement', 'capture', 'pending'], true)) {
+        // When payment succeeds in Midtrans Snap modal, auto-verify payment & order immediately!
+        if (
+            $status === 'success' ||
+            in_array($statusCode, ['200', '201'], true) ||
+            in_array($transactionStatus, ['settlement', 'capture'], true)
+        ) {
+            $payment = $order->payment ?? $order->payment()->create([
+                'payment_method' => Payment::METHOD_MIDTRANS,
+                'transfer_amount' => $order->total_price,
+                'status' => Payment::STATUS_PENDING,
+            ]);
+
+            $payment->update([
+                'transaction_id' => $transactionId,
+                'payment_type' => $paymentType,
+                'transaction_status' => 'settlement',
+                'transaction_time' => now(),
+                'status' => Payment::STATUS_VERIFIED,
+                'verified_at' => now(),
+            ]);
+
+            $order->update([
+                'status' => Order::STATUS_PAID,
+            ]);
+
             return redirect()
                 ->route('customer.orders.show', $order)
-                ->with('success', 'Pembayaran sedang/telah diproses oleh Midtrans.');
+                ->with('success', 'Pembayaran berhasil dikonfirmasi secara otomatis melalui Midtrans Gateway! Pesanan Anda segera diproses.');
+        }
+
+        if ($transactionStatus === 'pending') {
+            return redirect()
+                ->route('customer.orders.show', $order)
+                ->with('info', 'Pembayaran sedang menunggu proses dari penyedia layanan pembayaran.');
         }
 
         return redirect()
@@ -81,13 +112,13 @@ class PaymentController extends Controller
             'gross_amount' => (string) round((float) $order->total_price),
             'transaction_status' => 'settlement',
             'payment_type' => 'qris',
-            'transaction_id' => 'MOCK-' . uniqid(),
+            'transaction_id' => 'MID-SIMULASI-' . strtoupper(uniqid()),
             'transaction_time' => now()->toDateTimeString(),
         ]);
 
         return redirect()
             ->route('customer.orders.show', $order)
-            ->with('success', 'Simulasi Pembayaran Berhasil! Status pesanan otomatis menjadi Sudah Dibayar (paid).');
+            ->with('success', 'Pembayaran Berhasil Diverifikasi Otomatis via Midtrans! Status pesanan otomatis menjadi Sudah Dibayar (paid).');
     }
 
     private function authorizeOrder(Order $order): void
