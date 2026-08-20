@@ -425,8 +425,8 @@ textarea.form-control { min-height: 120px; }
     a { color: #111827 !important; text-decoration: none !important; }
 }
 
-/* LabKerKomIT Community watermark */
-.labkerkomit-watermark {
+/* NusaCendana watermark */
+.nusacendana-watermark {
     position: fixed;
     right: 18px;
     bottom: 18px;
@@ -445,14 +445,14 @@ textarea.form-control { min-height: 120px; }
     text-decoration: none;
 }
 
-.labkerkomit-watermark:hover,
-.labkerkomit-watermark:focus-visible {
+.nusacendana-watermark:hover,
+.nusacendana-watermark:focus-visible {
     color: #ffffff;
     background: rgba(17, 24, 39, 0.96);
     transform: translateY(-1px);
 }
 
-.labkerkomit-watermark__mark {
+.nusacendana-watermark__mark {
     width: 34px;
     height: 34px;
     border-radius: 999px;
@@ -467,7 +467,7 @@ textarea.form-control { min-height: 120px; }
     flex-shrink: 0;
 }
 
-.labkerkomit-watermark__text {
+.nusacendana-watermark__text {
     display: grid;
     line-height: 1.05;
     font-weight: 800;
@@ -475,7 +475,7 @@ textarea.form-control { min-height: 120px; }
     letter-spacing: -0.01em;
 }
 
-.labkerkomit-watermark__text small {
+.nusacendana-watermark__text small {
     color: rgba(255, 255, 255, 0.72);
     font-size: 0.68rem;
     font-weight: 700;
@@ -558,19 +558,19 @@ textarea.form-control { min-height: 120px; }
 }
 
 @media (max-width: 575.98px) {
-    .labkerkomit-watermark {
+    .nusacendana-watermark {
         right: 12px;
         bottom: 12px;
         padding: 8px;
     }
 
-    .labkerkomit-watermark__text {
+    .nusacendana-watermark__text {
         display: none;
     }
 }
 
 @media print {
-    .labkerkomit-watermark {
+    .nusacendana-watermark {
         display: none !important;
     }
 }

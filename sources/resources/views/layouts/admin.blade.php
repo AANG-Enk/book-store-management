@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    @include('partials.labkerkomit-watermark')
+    @include('partials.nusacendana-watermark')
 
     @stack('scripts')
 </body>

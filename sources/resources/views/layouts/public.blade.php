@@ -18,7 +18,7 @@
 
     @include('partials.public.footer')
 
-    @include('partials.labkerkomit-watermark')
+    @include('partials.nusacendana-watermark')
 
     @stack('scripts')
 </body>
