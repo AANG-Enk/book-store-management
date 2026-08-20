@@ -16,6 +16,7 @@ use App\Http\Controllers\Customer\CheckoutController;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\Customer\PaymentController as CustomerPaymentController;
 use App\Http\Controllers\Customer\ShippingController;
+use App\Http\Controllers\MidtransCallbackController;
 
 use App\Http\Controllers\Public\BookCatalogController;
 use App\Http\Controllers\Public\PageController;
@@ -113,8 +114,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/shipping/calculate-cost', [ShippingController::class, 'calculateCost'])->name('shipping.calculate-cost');
 
             Route::get('/orders/{order}/payment', [CustomerPaymentController::class, 'create'])->name('payments.create');
-            Route::post('/orders/{order}/payment', [CustomerPaymentController::class, 'store'])->name('payments.store');
+            Route::get('/orders/{order}/payment/finish', [CustomerPaymentController::class, 'finish'])->name('payments.finish');
+            Route::post('/orders/{order}/payment/simulate-success', [CustomerPaymentController::class, 'simulateSuccess'])->name('payments.simulate-success');
         });
 });
+
+Route::post('/midtrans/notification', [MidtransCallbackController::class, 'handle'])->name('midtrans.notification');
+Route::post('/api/midtrans/notification', [MidtransCallbackController::class, 'handle'])->name('api.midtrans.notification');
 
 require __DIR__.'/auth.php';

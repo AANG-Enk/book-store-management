@@ -5,104 +5,89 @@ namespace App\Http\Controllers\Customer;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Services\MidtransService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class PaymentController extends Controller
 {
+    public function __construct(
+        protected MidtransService $midtransService
+    ) {}
+
     public function create(Order $order): View|RedirectResponse
     {
         $this->authorizeOrder($order);
 
+        if (in_array($order->status, [Order::STATUS_PAID, Order::STATUS_PROCESSING, Order::STATUS_SHIPPED, Order::STATUS_COMPLETED], true)) {
+            return redirect()
+                ->route('customer.orders.show', $order)
+                ->with('success', 'Pesanan ini sudah dibayar.');
+        }
+
         if ($order->status === Order::STATUS_WAITING_SHIPPING) {
             return redirect()
                 ->route('customer.orders.show', $order)
-                ->with('error', 'Pesanan masih menunggu admin menentukan ongkos kirim.');
+                ->with('error', 'Pesanan masih menunggu ongkos kirim.');
         }
 
-        abort_if(
-            ! in_array($order->status, [
-                Order::STATUS_WAITING_PAYMENT,
-                Order::STATUS_PENDING,
-            ], true),
-            403
-        );
+        $order->load(['items.book', 'payment']);
 
-        $order->load('payment');
+        $snapToken = $this->midtransService->createSnapToken($order);
+        $clientKey = $this->midtransService->getClientKey();
+        $snapScriptUrl = $this->midtransService->getSnapScriptUrl();
+        $isConfigured = $this->midtransService->isConfigured();
 
-        return view('customer.payments.create', compact('order'));
+        return view('customer.payments.create', compact(
+            'order',
+            'snapToken',
+            'clientKey',
+            'snapScriptUrl',
+            'isConfigured'
+        ));
     }
 
-    public function store(Request $request, Order $order): RedirectResponse
+    public function finish(Request $request, Order $order): RedirectResponse
     {
         $this->authorizeOrder($order);
 
-        if ($order->status === Order::STATUS_WAITING_SHIPPING) {
+        $orderId = $request->string('order_id')->toString();
+        $statusCode = $request->string('status_code')->toString();
+        $transactionStatus = $request->string('transaction_status')->toString();
+
+        // If redirected from Midtrans Snap success
+        if (in_array($statusCode, ['200', '201'], true) || in_array($transactionStatus, ['settlement', 'capture', 'pending'], true)) {
             return redirect()
                 ->route('customer.orders.show', $order)
-                ->with('error', 'Pesanan masih menunggu admin menentukan ongkos kirim.');
+                ->with('success', 'Pembayaran sedang/telah diproses oleh Midtrans.');
         }
 
-        abort_if(
-            ! in_array($order->status, [
-                Order::STATUS_WAITING_PAYMENT,
-                Order::STATUS_PENDING,
-            ], true),
-            403
-        );
+        return redirect()
+            ->route('customer.orders.show', $order)
+            ->with('info', 'Status transaksi telah diperbarui.');
+    }
 
-        $validated = $request->validate([
-            'bank_name' => ['nullable', 'string', 'max:100'],
-            'sender_name' => ['required', 'string', 'max:150'],
-            'transfer_amount' => ['required', 'numeric', 'min:1'],
-            'proof_image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-        ]);
+    /**
+     * Simulation method for presentation / thesis testing when sandbox keys are pending
+     */
+    public function simulateSuccess(Order $order): RedirectResponse
+    {
+        $this->authorizeOrder($order);
 
-        $payment = $order->payment;
-
-        if ($payment && $payment->status === Payment::STATUS_VERIFIED) {
-            return redirect()
-                ->route('customer.orders.show', $order)
-                ->with('error', 'Pembayaran sudah diverifikasi dan tidak bisa diubah.');
-        }
-
-        $proofPath = $request->file('proof_image')
-            ->store('payments/proofs', 'public');
-
-        if ($payment) {
-            if ($payment->proof_image) {
-                Storage::disk('public')->delete($payment->proof_image);
-            }
-
-            $payment->update([
-                'bank_name' => $validated['bank_name'] ?? null,
-                'sender_name' => $validated['sender_name'],
-                'transfer_amount' => $validated['transfer_amount'],
-                'proof_image' => $proofPath,
-                'status' => Payment::STATUS_PENDING,
-                'admin_note' => null,
-                'verified_at' => null,
-            ]);
-        } else {
-            $order->payment()->create([
-                'payment_method' => 'bank_transfer',
-                'bank_name' => $validated['bank_name'] ?? null,
-                'sender_name' => $validated['sender_name'],
-                'transfer_amount' => $validated['transfer_amount'],
-                'proof_image' => $proofPath,
-                'status' => Payment::STATUS_PENDING,
-            ]);
-        }
-
-        $order->update([
-            'status' => Order::STATUS_WAITING_PAYMENT,
+        $this->midtransService->handleNotification([
+            'order_id' => $order->invoice_number,
+            'status_code' => '200',
+            'gross_amount' => (string) round((float) $order->total_price),
+            'transaction_status' => 'settlement',
+            'payment_type' => 'qris',
+            'transaction_id' => 'MOCK-' . uniqid(),
+            'transaction_time' => now()->toDateTimeString(),
         ]);
 
         return redirect()
             ->route('customer.orders.show', $order)
-            ->with('success', 'Bukti pembayaran berhasil diupload. Silakan tunggu verifikasi admin.');
+            ->with('success', 'Simulasi Pembayaran Berhasil! Status pesanan otomatis menjadi Sudah Dibayar (paid).');
     }
 
     private function authorizeOrder(Order $order): void

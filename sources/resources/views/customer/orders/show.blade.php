@@ -189,54 +189,68 @@
                 </div>
             </div>
 
-            @if ($order->payment)
-                <div class="card content-card">
+            @if ($order->payment && $order->payment->status === \App\Models\Payment::STATUS_VERIFIED)
+                <div class="card content-card border-0 shadow-sm">
                     <div class="card-body p-4">
-                        <h2 class="h5 fw-bold mb-3">Pembayaran</h2>
+                        <h2 class="h5 fw-bold mb-3">Informasi Pembayaran</h2>
 
                         <div class="mb-3">
                             <span class="badge {{ $order->payment->status_badge_class }}">{{ $order->payment->status_label }}</span>
                         </div>
 
-                        <div class="small text-secondary mb-1">Nama Pengirim</div>
-                        <div class="fw-semibold mb-3">{{ $order->payment->sender_name }}</div>
+                        <div class="small text-secondary mb-1">Metode Pembayaran</div>
+                        <div class="fw-semibold mb-3">{{ $order->payment->payment_method_label }}</div>
 
-                        <div class="small text-secondary mb-1">Nominal Transfer</div>
+                        <div class="small text-secondary mb-1">Nominal Terbayar</div>
                         <div class="fw-semibold text-primary mb-3">{{ $order->payment->formatted_transfer_amount }}</div>
 
-                        @if ($order->payment->status === \App\Models\Payment::STATUS_REJECTED)
-                            <div class="alert alert-danger">
-                                <div class="fw-semibold">Pembayaran ditolak</div>
-                                <div class="small">{{ $order->payment->admin_note }}</div>
-                            </div>
-
-                            <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">
-                                Upload Ulang Bukti Pembayaran
-                            </a>
-                        @elseif ($order->payment->status === \App\Models\Payment::STATUS_PENDING)
-                            <div class="alert alert-warning small">
-                                Bukti pembayaran sedang menunggu verifikasi admin.
-                            </div>
-                        @else
-                            <div class="alert alert-success small">
-                                Pembayaran sudah diverifikasi.
-                            </div>
+                        @if ($order->payment->transaction_id)
+                            <div class="small text-secondary mb-1">ID Transaksi Midtrans</div>
+                            <div class="small font-monospace mb-3">{{ $order->payment->transaction_id }}</div>
                         @endif
+
+                        <div class="small text-secondary mb-1">Waktu Verifikasi</div>
+                        <div class="small text-muted">{{ $order->payment->verified_at?->format('d M Y H:i') ?? '-' }}</div>
                     </div>
                 </div>
-            @elseif ($order->status === \App\Models\Order::STATUS_WAITING_SHIPPING)
-                <div class="alert alert-warning">
-                    <div class="fw-semibold mb-1">Belum bisa upload pembayaran</div>
-                    <div class="small">Admin perlu menentukan ongkos kirim terlebih dahulu.</div>
-                </div>
-            @else
-                <div class="alert alert-info">
-                    <div class="fw-semibold mb-1">Pembayaran Manual</div>
-                    <div class="small mb-3">Silakan upload bukti transfer sesuai total pembayaran.</div>
+            @elseif ($order->payment && $order->payment->status === \App\Models\Payment::STATUS_REJECTED)
+                <div class="card content-card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold mb-3">Status Pembayaran</h2>
 
-                    <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">
-                        Upload Bukti Pembayaran
-                    </a>
+                        <div class="mb-3">
+                            <span class="badge {{ $order->payment->status_badge_class }}">{{ $order->payment->status_label }}</span>
+                        </div>
+
+                        <div class="alert alert-danger small">
+                            <div class="fw-semibold mb-1">Pembayaran Gagal / Dibatalkan</div>
+                            <div>{{ $order->payment->admin_note ?: 'Transaksi dibatalkan atau kedaluwarsa.' }}</div>
+                        </div>
+
+                        <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary w-100">
+                            <i class="bi bi-arrow-repeat me-1"></i> Coba Bayar Lagi via Midtrans
+                        </a>
+                    </div>
+                </div>
+            @elseif (in_array($order->status, [\App\Models\Order::STATUS_WAITING_PAYMENT, \App\Models\Order::STATUS_PENDING], true))
+                <div class="card content-card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h2 class="h5 fw-bold mb-2">Pembayaran</h2>
+                        <div class="text-muted small mb-3">
+                            Selesaikan pembayaran Anda secara instan menggunakan Midtrans Payment Gateway.
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="badge text-bg-warning">Menunggu Pembayaran</span>
+                        </div>
+
+                        <div class="small text-secondary mb-1">Total Tagihan</div>
+                        <div class="h5 fw-bold text-primary mb-3">{{ $order->formatted_total_price }}</div>
+
+                        <a href="{{ route('customer.payments.create', $order) }}" class="btn btn-primary btn-lg w-100 shadow-sm">
+                            <i class="bi bi-credit-card-2-front me-1"></i> Bayar Sekarang
+                        </a>
+                    </div>
                 </div>
             @endif
         </div>
