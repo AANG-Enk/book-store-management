@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Services\RajaOngkirService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,10 @@ use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
+    public function __construct(
+        protected RajaOngkirService $rajaOngkirService
+    ) {}
+
     public function create(): View|RedirectResponse
     {
         $cartItems = $this->getCartItems();
@@ -31,7 +36,9 @@ class CheckoutController extends Controller
             ? rtrim(rtrim(number_format($totalWeight / 1000, 2, ',', '.'), '0'), ',') . ' kg'
             : $totalWeight . ' gram';
 
-        return view('customer.checkout.create', compact('cartItems', 'cartTotal', 'totalWeight', 'formattedWeight'));
+        $provinces = $this->rajaOngkirService->getProvinces();
+
+        return view('customer.checkout.create', compact('cartItems', 'cartTotal', 'totalWeight', 'formattedWeight', 'provinces'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -128,8 +135,8 @@ class CheckoutController extends Controller
         });
 
         return redirect()
-            ->route('customer.orders.show', $order)
-            ->with('success', 'Pesanan berhasil dibuat dengan ongkos kirim otomatis. Silakan lanjutkan pembayaran.');
+            ->route('customer.payments.create', $order)
+            ->with('success', 'Pesanan berhasil dibuat dengan ongkos kirim otomatis. Silakan lakukan pembayaran.');
     }
 
     private function getCartItems()

@@ -6,7 +6,7 @@
     <div class="mb-4">
         <h1 class="h3 fw-bold mb-1">Checkout</h1>
         <p class="text-secondary mb-0">
-            Lengkapi data pengiriman. Ongkos kirim dihitung otomatis secara akurat via RajaOngkir.
+            Lengkapi data pengiriman. Ongkos kirim dari Toko Buku NusaCendana (Braga, Kota Bandung) dihitung otomatis via RajaOngkir.
         </p>
     </div>
 
@@ -104,7 +104,7 @@
                                 <h2 class="h5 fw-bold mb-0">Alamat & Pengiriman (RajaOngkir)</h2>
                             </div>
                             <span class="badge bg-success-subtle text-success border border-success-subtle">
-                                <i class="bi bi-truck me-1"></i> Auto-Calculated
+                                <i class="bi bi-truck me-1"></i> Asal: Braga, Kota Bandung
                             </span>
                         </div>
 
@@ -113,7 +113,12 @@
                             <div class="col-md-6">
                                 <label for="select_province" class="form-label">Provinsi Tujuan <span class="text-danger">*</span></label>
                                 <select id="select_province" class="form-select @error('shipping_province') is-invalid @enderror" required>
-                                    <option value="">-- Memuat provinsi... --</option>
+                                    <option value="">-- Pilih Provinsi Tujuan --</option>
+                                    @foreach ($provinces as $province)
+                                        <option value="{{ $province['id'] }}" @selected(old('shipping_province') === $province['name'])>
+                                            {{ $province['name'] }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @error('shipping_province')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -155,24 +160,24 @@
                                     class="form-control @error('shipping_postal_code') is-invalid @enderror"
                                     value="{{ old('shipping_postal_code') }}"
                                     maxlength="20"
-                                    placeholder="Contoh: 85111"
+                                    placeholder="Contoh: 40111"
                                 >
                                 @error('shipping_postal_code')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Pilihan Layanan & Tarif Ongkir (Dynamic Radio Options) -->
+                            <!-- Pilihan Layanan & Tarif Ongkir -->
                             <div class="col-12 mt-3">
                                 <label class="form-label d-flex justify-content-between align-items-center">
-                                    <span>Pilih Layanan & Tarif Ongkos Kirim <span class="text-danger">*</span></span>
+                                    <span>Pilihan Layanan & Tarif Ongkos Kirim <span class="text-danger">*</span></span>
                                     <span id="shipping-loading-spinner" class="spinner-border spinner-border-sm text-primary d-none" role="status"></span>
                                 </label>
 
                                 <div id="services-container" class="border rounded p-3 bg-light-subtle">
                                     <div id="services-placeholder" class="text-secondary small text-center py-3">
                                         <i class="bi bi-geo-alt fs-4 d-block mb-1 text-muted"></i>
-                                        Pilih provinsi, kota, dan kurir di atas untuk menghitung ongkir secara otomatis.
+                                        Pilih <strong>Provinsi</strong>, <strong>Kota</strong>, dan <strong>Kurir</strong> di atas untuk menghitung ongkir secara otomatis.
                                     </div>
                                     <div id="services-list" class="vstack gap-2 d-none">
                                         <!-- Dynamic radio list will be rendered here -->
@@ -321,7 +326,7 @@
 
                         <div class="small text-muted mt-3 text-center">
                             <i class="bi bi-info-circle me-1"></i>
-                            Setelah pesanan dibuat, Anda akan langsung diarahkan ke pembayaran.
+                            Setelah pesanan dibuat, Anda akan langsung diarahkan ke pembayaran Midtrans.
                         </div>
                     </div>
                 </div>
@@ -335,7 +340,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     const cartTotal = {{ (float) $cartTotal }};
     const routes = {
-        provinces: "{{ route('customer.shipping.provinces') }}",
         cities: "{{ route('customer.shipping.cities') }}",
         calculateCost: "{{ route('customer.shipping.calculate-cost') }}"
     };
@@ -367,42 +371,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let currentCities = [];
 
-    // Helper number format
     function formatRupiah(number) {
         return 'Rp ' + Number(number).toLocaleString('id-ID');
     }
 
-    // 1. Fetch Provinces on Load
-    fetch(routes.provinces)
-        .then(res => res.json())
-        .then(response => {
-            selectProvince.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
-            if (response.data && Array.isArray(response.data)) {
-                response.data.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p.id;
-                    opt.textContent = p.name;
-                    if (inputProvince.value && inputProvince.value.toLowerCase() === p.name.toLowerCase()) {
-                        opt.selected = true;
-                    }
-                    selectProvince.appendChild(opt);
-                });
-
-                if (selectProvince.value) {
-                    loadCities(selectProvince.value);
-                }
-            }
-        })
-        .catch(err => {
-            selectProvince.innerHTML = '<option value="">Gagal memuat provinsi</option>';
-            console.error('Error fetching provinces:', err);
-        });
-
-    // 2. Province change -> Load Cities
+    // 1. Province change -> Load Cities
     selectProvince.addEventListener('change', function () {
         const provinceId = this.value;
         const selectedOption = this.options[this.selectedIndex];
-        inputProvince.value = selectedOption ? selectedOption.textContent : '';
+        inputProvince.value = selectedOption && selectedOption.value ? selectedOption.textContent.trim() : '';
 
         // Reset cities & shipping
         selectCity.innerHTML = '<option value="">-- Memuat kota/kabupaten... --</option>';
@@ -412,6 +389,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (provinceId) {
             loadCities(provinceId);
+        } else {
+            selectCity.innerHTML = '<option value="">-- Pilih provinsi terlebih dahulu --</option>';
         }
     });
 
@@ -443,11 +422,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // 3. City change -> auto set postal code and enable courier
+    // 2. City change -> auto set postal code and enable courier
     selectCity.addEventListener('change', function () {
         const selectedOption = this.options[this.selectedIndex];
         if (selectedOption && selectedOption.value) {
-            inputCity.value = selectedOption.textContent;
+            inputCity.value = selectedOption.textContent.trim();
             if (selectedOption.dataset.postalCode && !postalCodeInput.value) {
                 postalCodeInput.value = selectedOption.dataset.postalCode;
             }
@@ -461,9 +440,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 4. Courier change -> calculate shipping cost
+    // 3. Courier change -> calculate shipping cost
     selectCourier.addEventListener('change', function () {
-        inputCourier.value = this.value.toUpperCase();
+        inputCourier.value = this.value ? this.value.toUpperCase() : '';
         if (this.value && selectCity.value) {
             calculateShipping();
         } else {
@@ -471,7 +450,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // 5. Calculate shipping via backend API
+    // 4. Calculate shipping via backend API
     function calculateShipping() {
         const cityId = selectCity.value;
         const courier = selectCourier.value;
@@ -545,7 +524,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                // Attach change listeners to radios
                 document.querySelectorAll('.service-radio').forEach(r => {
                     r.addEventListener('change', function() {
                         if (this.checked) {
@@ -587,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetServices() {
         inputService.value = '';
         inputCost.value = 0;
-        servicesPlaceholder.textContent = 'Pilih provinsi, kota, dan kurir di atas untuk menghitung ongkir secara otomatis.';
+        servicesPlaceholder.innerHTML = '<i class="bi bi-geo-alt fs-4 d-block mb-1 text-muted"></i> Pilih <strong>Provinsi</strong>, <strong>Kota</strong>, dan <strong>Kurir</strong> di atas untuk menghitung ongkir secara otomatis.';
         servicesPlaceholder.classList.remove('d-none');
         servicesList.classList.add('d-none');
         servicesList.innerHTML = '';
@@ -596,6 +574,11 @@ document.addEventListener('DOMContentLoaded', function () {
         summaryTotalPrice.textContent = formatRupiah(cartTotal);
         selectedServiceBadge.classList.add('d-none');
         btnSubmit.disabled = true;
+    }
+
+    // If province was pre-selected (e.g. from previous submit or old input)
+    if (selectProvince.value) {
+        loadCities(selectProvince.value);
     }
 });
 </script>
