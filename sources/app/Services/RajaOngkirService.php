@@ -17,8 +17,8 @@ class RajaOngkirService
     {
         $this->apiKey = config('services.rajaongkir.api_key');
         $this->baseUrl = rtrim(config('services.rajaongkir.base_url', 'https://api.rajaongkir.com/starter/'), '/') . '/';
-        $this->originCityId = (int) config('services.rajaongkir.origin_city_id', 213);
-        $this->originCityName = (string) config('services.rajaongkir.origin_city_name', 'Kupang');
+        $this->originCityId = (int) config('services.rajaongkir.origin_city_id', 22);
+        $this->originCityName = (string) config('services.rajaongkir.origin_city_name', 'Kota Bandung');
     }
 
     public function isConfigured(): bool
